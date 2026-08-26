@@ -1,0 +1,28 @@
+# Environment variables (Critical - never commit)
+.env
+.env.*
+!.env.example
+
+# Python & Virtual Environments
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.sqlite3
+
+# Node & Next.js
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Database & Docker
+pgdata/
+*.db
+
+# OS / Editor files
+.DS_Store
+.vscode/
+.idea/
