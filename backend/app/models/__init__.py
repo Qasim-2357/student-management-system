@@ -1,3 +1,3 @@
-from app.models.models import User, Student, Subject, Mark
+from app.models.models import AcademicClass, Mark, Student, Subject, Teacher, User
 
-__all__ = ["User", "Student", "Subject", "Mark"]
+__all__ = ["AcademicClass", "Mark", "Student", "Subject", "Teacher", "User"]
