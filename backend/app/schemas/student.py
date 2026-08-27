@@ -2,6 +2,8 @@ from datetime import date, datetime
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
+from app.schemas.academic_class import ClassResponse
+
 
 class StudentCreate(BaseModel):
     name: str = Field(min_length=1, max_length=100)
@@ -49,3 +51,29 @@ class StudentListResponse(BaseModel):
     page: int
     page_size: int
     total_pages: int
+
+
+class StudentProfileInfo(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    roll_number: str
+    email: EmailStr
+    phone: str
+    date_of_birth: date | None
+    course: str
+    semester: int
+
+
+class StudentProfileMark(BaseModel):
+    id: int
+    subject_id: int
+    subject_name: str
+    marks: float
+
+
+class StudentProfileResponse(BaseModel):
+    student: StudentProfileInfo
+    academic_class: ClassResponse | None
+    marks: list[StudentProfileMark]

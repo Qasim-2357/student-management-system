@@ -1,10 +1,15 @@
 from fastapi import HTTPException, status
 from sqlalchemy import func, or_, select
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
-from app.models.models import AcademicClass, Student, Teacher, User
-from app.schemas.student import StudentCreate, StudentUpdate
+from app.models.models import AcademicClass, Mark, Student, Teacher, User
+from app.schemas.student import (
+    StudentCreate,
+    StudentProfileMark,
+    StudentProfileResponse,
+    StudentUpdate,
+)
 
 
 def get_student_or_404(db: Session, student_id: int) -> Student:
@@ -15,6 +20,35 @@ def get_student_or_404(db: Session, student_id: int) -> Student:
             detail=f"Student with id {student_id} was not found",
         )
     return student
+
+
+def get_student_profile_or_404(db: Session, student_id: int) -> StudentProfileResponse:
+    student = db.scalars(
+        select(Student)
+        .where(Student.id == student_id)
+        .options(
+            selectinload(Student.academic_class),
+            selectinload(Student.marks).selectinload(Mark.subject),
+        )
+    ).first()
+    if student is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Student with id {student_id} was not found",
+        )
+    return StudentProfileResponse(
+        student=student,
+        academic_class=student.academic_class,
+        marks=[
+            StudentProfileMark(
+                id=mark.id,
+                subject_id=mark.subject_id,
+                subject_name=mark.subject.name,
+                marks=mark.marks,
+            )
+            for mark in sorted(student.marks, key=lambda item: item.id)
+        ],
+    )
 
 
 def _validate_relationships(

@@ -5,12 +5,19 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.models import User
-from app.schemas.student import StudentCreate, StudentListResponse, StudentResponse, StudentUpdate
+from app.schemas.student import (
+    StudentCreate,
+    StudentListResponse,
+    StudentProfileResponse,
+    StudentResponse,
+    StudentUpdate,
+)
 from app.security import get_current_admin, get_current_user
 from app.services.students import (
     create_student,
     delete_student,
     get_student_or_404,
+    get_student_profile_or_404,
     list_students,
     update_student,
 )
@@ -54,6 +61,15 @@ def list_students_endpoint(
         page_size=page_size,
         total_pages=ceil(total / page_size) if total else 0,
     )
+
+
+@router.get("/{student_id}/profile", response_model=StudentProfileResponse)
+def get_student_profile_endpoint(
+    student_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return get_student_profile_or_404(db, student_id)
 
 
 @router.get("/{student_id}", response_model=StudentResponse)
