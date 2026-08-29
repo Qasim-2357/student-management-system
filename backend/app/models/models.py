@@ -87,6 +87,90 @@ class Student(Base):
     )
     marks: Mapped[list["Mark"]] = relationship(back_populates="student")
     attendances: Mapped[list["Attendance"]] = relationship(back_populates="student")
+    fees: Mapped[list["Fee"]] = relationship(back_populates="student")
+    assignment_submissions: Mapped[list["AssignmentSubmission"]] = relationship(
+        back_populates="student"
+    )
+
+
+class Assignment(Base):
+    __tablename__ = "assignments"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    title: Mapped[str] = mapped_column(String(255))
+    description: Mapped[str | None] = mapped_column(String, nullable=True)
+    subject_id: Mapped[int] = mapped_column(ForeignKey("subjects.id"), index=True)
+    academic_class_id: Mapped[int] = mapped_column(
+        ForeignKey("academic_classes.id"),
+        index=True,
+    )
+    due_date: Mapped[date] = mapped_column(Date, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    subject: Mapped["Subject"] = relationship(back_populates="assignments")
+    academic_class: Mapped["AcademicClass"] = relationship(back_populates="assignments")
+    submissions: Mapped[list["AssignmentSubmission"]] = relationship(
+        back_populates="assignment"
+    )
+
+
+class AssignmentSubmission(Base):
+    __tablename__ = "assignment_submissions"
+    __table_args__ = (
+        UniqueConstraint(
+            "assignment_id",
+            "student_id",
+            name="uq_assignment_submissions_assignment_student",
+        ),
+        CheckConstraint(
+            "status IN ('pending', 'submitted', 'late')",
+            name="ck_assignment_submissions_status",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    assignment_id: Mapped[int] = mapped_column(
+        ForeignKey("assignments.id"),
+        index=True,
+    )
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"), index=True)
+    submitted_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True)
+    status: Mapped[str] = mapped_column(String(20))
+
+    assignment: Mapped[Assignment] = relationship(back_populates="submissions")
+    student: Mapped[Student] = relationship(back_populates="assignment_submissions")
+
+
+class Fee(Base):
+    __tablename__ = "fees"
+    __table_args__ = (
+        CheckConstraint("amount >= 0", name="ck_fees_amount_non_negative"),
+        CheckConstraint("paid_amount >= 0", name="ck_fees_paid_amount_non_negative"),
+        CheckConstraint("paid_amount <= amount", name="ck_fees_paid_amount_lte_amount"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"), index=True)
+    amount: Mapped[float] = mapped_column(Float)
+    paid_amount: Mapped[float] = mapped_column(Float, default=0.0)
+    due_date: Mapped[date] = mapped_column(Date, index=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+    student: Mapped[Student] = relationship(back_populates="fees")
+
+    @property
+    def due_amount(self) -> float:
+        return float(self.amount - self.paid_amount)
+
+    @property
+    def status(self) -> str:
+        if self.paid_amount == 0:
+            return "pending"
+        if 0 < self.paid_amount < self.amount:
+            return "partial"
+        if self.paid_amount == self.amount:
+            return "paid"
+        return "pending"
 
 
 class Teacher(Base):
@@ -128,6 +212,7 @@ class AcademicClass(Base):
         back_populates="academic_classes",
     )
     exams: Mapped[list["Exam"]] = relationship(back_populates="academic_class")
+    assignments: Mapped[list[Assignment]] = relationship(back_populates="academic_class")
 
 
 class Subject(Base):
@@ -146,6 +231,7 @@ class Subject(Base):
         secondary=teacher_subjects,
         back_populates="subjects",
     )
+    assignments: Mapped[list[Assignment]] = relationship(back_populates="subject")
 
 
 class Exam(Base):

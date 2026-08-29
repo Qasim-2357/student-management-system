@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from app.routers.assignments import router as assignments_router
 from app.routers.attendance import router as attendance_router
 from app.routers.auth import router as auth_router
 from app.routers.authorization import router as authorization_router
@@ -6,8 +7,10 @@ from app.routers.charts import router as charts_router
 from app.routers.classes import router as classes_router
 from app.routers.students import router as students_router
 from app.routers.subjects import router as subjects_router
+from app.routers.submissions import router as submissions_router
 from app.routers.teachers import router as teachers_router
 from app.routers.exams import router as exams_router
+from app.routers.fees import router as fees_router
 from app.routers.marks import router as marks_router
 from app.routers.grades import router as grades_router
 from app.routers.performance import router as performance_router
@@ -22,6 +25,9 @@ app.include_router(classes_router)
 app.include_router(subjects_router)
 app.include_router(attendance_router)
 app.include_router(exams_router)
+app.include_router(assignments_router)
+app.include_router(submissions_router)
+app.include_router(fees_router)
 app.include_router(marks_router)
 app.include_router(grades_router)
 app.include_router(performance_router)
