@@ -1,6 +1,17 @@
 from datetime import date, datetime
 
-from sqlalchemy import Date, DateTime, Float, ForeignKey, Integer, String, Table, Column
+from sqlalchemy import (
+    CheckConstraint,
+    Column,
+    Date,
+    DateTime,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Table,
+    UniqueConstraint,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -75,6 +86,7 @@ class Student(Base):
         back_populates="students"
     )
     marks: Mapped[list["Mark"]] = relationship(back_populates="student")
+    attendances: Mapped[list["Attendance"]] = relationship(back_populates="student")
 
 
 class Teacher(Base):
@@ -115,6 +127,7 @@ class AcademicClass(Base):
         secondary=teacher_academic_classes,
         back_populates="academic_classes",
     )
+    exams: Mapped[list["Exam"]] = relationship(back_populates="academic_class")
 
 
 class Subject(Base):
@@ -135,13 +148,61 @@ class Subject(Base):
     )
 
 
-class Mark(Base):
-    __tablename__ = "marks"
+class Exam(Base):
+    __tablename__ = "exams"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"))
-    subject_id: Mapped[int] = mapped_column(ForeignKey("subjects.id"))
+    name: Mapped[str] = mapped_column(String(100))
+    exam_type: Mapped[str] = mapped_column(String(50))
+    exam_date: Mapped[date] = mapped_column(Date, index=True)
+    academic_class_id: Mapped[int] = mapped_column(
+        ForeignKey("academic_classes.id"),
+        index=True,
+    )
+
+    academic_class: Mapped[AcademicClass] = relationship(back_populates="exams")
+    marks: Mapped[list["Mark"]] = relationship(back_populates="exam")
+
+
+class Attendance(Base):
+    __tablename__ = "attendances"
+    __table_args__ = (
+        UniqueConstraint(
+            "student_id",
+            "attendance_date",
+            name="uq_attendances_student_date",
+        ),
+        CheckConstraint(
+            "status IN ('present', 'absent')",
+            name="ck_attendances_status",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"), index=True)
+    attendance_date: Mapped[date] = mapped_column(Date, index=True)
+    status: Mapped[str] = mapped_column(String(20))
+
+    student: Mapped[Student] = relationship(back_populates="attendances")
+
+
+class Mark(Base):
+    __tablename__ = "marks"
+    __table_args__ = (
+        UniqueConstraint(
+            "exam_id",
+            "student_id",
+            "subject_id",
+            name="uq_marks_exam_student_subject",
+        ),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    exam_id: Mapped[int] = mapped_column(ForeignKey("exams.id"), index=True)
+    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"), index=True)
+    subject_id: Mapped[int] = mapped_column(ForeignKey("subjects.id"), index=True)
     marks: Mapped[float] = mapped_column(Float)
 
+    exam: Mapped["Exam"] = relationship(back_populates="marks")
     student: Mapped[Student] = relationship(back_populates="marks")
     subject: Mapped[Subject] = relationship(back_populates="marks")

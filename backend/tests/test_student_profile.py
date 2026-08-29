@@ -1,4 +1,5 @@
 import unittest
+from datetime import date
 
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
@@ -7,7 +8,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.database import Base, get_db
 from app.main import app
-from app.models.models import AcademicClass, Mark, Subject, User
+from app.models.models import AcademicClass, Exam, Mark, Subject, User
 from app.security import hash_password
 
 
@@ -98,11 +99,24 @@ class StudentProfileApiTests(unittest.TestCase):
         return academic_class
 
     def _create_mark(self, student_id: int, subject_name: str, subject_code: str, marks: float) -> Mark:
+        academic_class = self._create_academic_class(code=f"EXAM-{subject_code}")
+        exam = Exam(
+            name="Midterm",
+            exam_type="midterm",
+            exam_date=date(2026, 1, 15),
+            academic_class_id=academic_class.id,
+        )
         subject = Subject(name=subject_name, code=subject_code)
-        self.db.add(subject)
+        self.db.add_all([exam, subject])
         self.db.commit()
+        self.db.refresh(exam)
         self.db.refresh(subject)
-        mark = Mark(student_id=student_id, subject_id=subject.id, marks=marks)
+        mark = Mark(
+            exam_id=exam.id,
+            student_id=student_id,
+            subject_id=subject.id,
+            marks=marks,
+        )
         self.db.add(mark)
         self.db.commit()
         self.db.refresh(mark)
