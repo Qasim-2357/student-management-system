@@ -7,6 +7,7 @@ from app.routers.students import router as students_router
 from app.routers.subjects import router as subjects_router
 from app.routers.teachers import router as teachers_router
 from app.routers.exams import router as exams_router
+from app.routers.marks import router as marks_router
 
 app = FastAPI(title="Student Management System API")
 
@@ -18,6 +19,7 @@ app.include_router(classes_router)
 app.include_router(subjects_router)
 app.include_router(attendance_router)
 app.include_router(exams_router)
+app.include_router(marks_router)
 
 @app.get("/")
 def root():
