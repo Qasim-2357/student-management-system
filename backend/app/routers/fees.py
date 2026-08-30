@@ -9,7 +9,7 @@ from app.models.models import User
 from app.schemas.fee_receipt import FeeReceiptResponse
 from app.schemas.fee import FeeCreate, FeeListResponse, FeeResponse, FeeStatus, FeeUpdate
 from app.security import get_current_admin, get_current_user
-from app.services.fee_receipts import get_fee_receipt
+from app.services.fee_receipts import generate_fee_receipt_pdf, get_fee_receipt
 from app.services.fees import create_fee, delete_fee, get_fee_or_404, list_fees, update_fee
 
 router = APIRouter(prefix="/fees", tags=["Fees"])
@@ -60,6 +60,22 @@ def get_fee_receipt_endpoint(
     current_user: User = Depends(get_current_user),
 ):
     return get_fee_receipt(db, fee_id)
+
+
+@router.get("/{fee_id}/receipt/pdf")
+def get_fee_receipt_pdf_endpoint(
+    fee_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    pdf_content = generate_fee_receipt_pdf(db, fee_id)
+    return Response(
+        content=pdf_content,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="fee-receipt-{fee_id}.pdf"'
+        },
+    )
 
 
 @router.get("/{fee_id}", response_model=FeeResponse)
