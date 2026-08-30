@@ -36,3 +36,52 @@ class AdminDashboardResponse(BaseModel):
     overall_attendance_percentage: float
     recent_students: list[RecentStudentItem] = Field(default_factory=list)
     upcoming_exams: list[UpcomingExamItem] = Field(default_factory=list)
+
+
+class TeacherInfo(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    email: EmailStr
+    phone: str
+
+
+class AssignedClassItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    code: str
+    student_count: int
+
+
+class AssignedSubjectItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    code: str
+
+
+class TeacherDashboardResponse(BaseModel):
+    teacher: TeacherInfo
+
+    total_assigned_classes: int
+    total_assigned_subjects: int
+    total_students: int
+
+    total_relevant_exams: int
+    upcoming_exams: list[UpcomingExamItem] = Field(default_factory=list)
+
+    total_assignments: int
+    total_submissions: int
+    submitted_submissions: int
+    pending_submissions: int
+
+    total_attendance_records: int
+    present_attendance_records: int
+    overall_attendance_percentage: float
+
+    assigned_classes: list[AssignedClassItem] = Field(default_factory=list)
+    assigned_subjects: list[AssignedSubjectItem] = Field(default_factory=list)
