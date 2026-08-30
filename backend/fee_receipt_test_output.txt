@@ -1,0 +1,1403 @@
+test_missing_fee_returns_404 (test_fee_receipt.FeeReceiptApiTests.test_missing_fee_returns_404) ... ok
+test_receipt_calculates_due_amount_and_paid_status (test_fee_receipt.FeeReceiptApiTests.test_receipt_calculates_due_amount_and_paid_status) ... C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\sqlalchemy\sql\schema.py:3627: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+ERROR
+test_receipt_contains_class_information (test_fee_receipt.FeeReceiptApiTests.test_receipt_contains_class_information) ... C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\sqlalchemy\sql\schema.py:3627: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+ERROR
+test_receipt_contains_fee_information (test_fee_receipt.FeeReceiptApiTests.test_receipt_contains_fee_information) ... C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\sqlalchemy\sql\schema.py:3627: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+ERROR
+test_receipt_contains_student_information (test_fee_receipt.FeeReceiptApiTests.test_receipt_contains_student_information) ... C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\sqlalchemy\sql\schema.py:3627: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+ERROR
+test_receipt_reports_pending_fee (test_fee_receipt.FeeReceiptApiTests.test_receipt_reports_pending_fee) ... C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\sqlalchemy\sql\schema.py:3627: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+ERROR
+test_receipt_requires_authentication (test_fee_receipt.FeeReceiptApiTests.test_receipt_requires_authentication) ... C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\sqlalchemy\sql\schema.py:3627: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+ok
+test_receipt_response_shape (test_fee_receipt.FeeReceiptApiTests.test_receipt_response_shape) ... C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\sqlalchemy\sql\schema.py:3627: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+ERROR
+test_receipt_uses_fee_student_relationship (test_fee_receipt.FeeReceiptApiTests.test_receipt_uses_fee_student_relationship) ... C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\sqlalchemy\sql\schema.py:3627: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+ERROR
+test_receipt_without_class_returns_null_class (test_fee_receipt.FeeReceiptApiTests.test_receipt_without_class_returns_null_class) ... C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\sqlalchemy\sql\schema.py:3627: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+ERROR
+test_successful_receipt_response (test_fee_receipt.FeeReceiptApiTests.test_successful_receipt_response) ... C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\sqlalchemy\sql\schema.py:3627: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  return util.wrap_callable(lambda ctx: fn(), fn)  # type: ignore
+ERROR
+
+======================================================================
+ERROR: test_receipt_calculates_due_amount_and_paid_status (test_fee_receipt.FeeReceiptApiTests.test_receipt_calculates_due_amount_and_paid_status)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\tests\test_fee_receipt.py", line 199, in test_receipt_calculates_due_amount_and_paid_status
+    receipt_fee = self.client.get(f"/fees/{fee.id}/receipt").json()["fee"]
+                  ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 483, in get
+    return super().get(
+           ~~~~~~~~~~~^
+        url,
+        ^^^^
+    ...<6 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1113, in get
+    return self.request(
+           ~~~~~~~~~~~~^
+        "GET",
+        ^^^^^^
+    ...<7 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 455, in request
+    return super().request(
+           ~~~~~~~~~~~~~~~^
+        method,
+        ^^^^^^^
+    ...<11 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 797, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 980, in send
+    response = self._send_handling_auth(
+        request,
+    ...<2 lines>...
+        history=[],
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1008, in _send_handling_auth
+    response = self._send_handling_redirects(
+        request,
+        follow_redirects=follow_redirects,
+        history=history,
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1043, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1076, in _send_single_request
+    response = transport.handle_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 354, in handle_request
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 351, in handle_request
+    portal.call(self.app, scope, receive, send)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 338, in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 454, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 396, in __get_result
+    raise self._exception
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 263, in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\routing.py", line 670, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1780, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2789, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1800, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1279, in handle
+    await app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 158, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 144, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 706, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 354, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2641, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1033, in run
+    result = context.run(func, *args)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\routers\fees.py", line 62, in get_fee_receipt_endpoint
+    return get_fee_receipt(db, fee_id)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\services\fee_receipts.py", line 17, in get_fee_receipt
+    student=FeeReceiptStudent.model_validate(student),
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\pydantic\main.py", line 732, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj,
+        ^^^^
+    ...<5 lines>...
+        by_name=by_name,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for FeeReceiptStudent
+  Input should be a valid dictionary or instance of FeeReceiptStudent [type=model_type, input_value=<app.models.models.Studen...t at 0x000001E85435D2B0>, input_type=Student]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+
+======================================================================
+ERROR: test_receipt_contains_class_information (test_fee_receipt.FeeReceiptApiTests.test_receipt_contains_class_information)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\tests\test_fee_receipt.py", line 177, in test_receipt_contains_class_information
+    body = self.client.get(f"/fees/{fee.id}/receipt").json()
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 483, in get
+    return super().get(
+           ~~~~~~~~~~~^
+        url,
+        ^^^^
+    ...<6 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1113, in get
+    return self.request(
+           ~~~~~~~~~~~~^
+        "GET",
+        ^^^^^^
+    ...<7 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 455, in request
+    return super().request(
+           ~~~~~~~~~~~~~~~^
+        method,
+        ^^^^^^^
+    ...<11 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 797, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 980, in send
+    response = self._send_handling_auth(
+        request,
+    ...<2 lines>...
+        history=[],
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1008, in _send_handling_auth
+    response = self._send_handling_redirects(
+        request,
+        follow_redirects=follow_redirects,
+        history=history,
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1043, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1076, in _send_single_request
+    response = transport.handle_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 354, in handle_request
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 351, in handle_request
+    portal.call(self.app, scope, receive, send)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 338, in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 454, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 396, in __get_result
+    raise self._exception
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 263, in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\routing.py", line 670, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1780, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2789, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1800, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1279, in handle
+    await app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 158, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 144, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 706, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 354, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2641, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1033, in run
+    result = context.run(func, *args)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\routers\fees.py", line 62, in get_fee_receipt_endpoint
+    return get_fee_receipt(db, fee_id)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\services\fee_receipts.py", line 17, in get_fee_receipt
+    student=FeeReceiptStudent.model_validate(student),
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\pydantic\main.py", line 732, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj,
+        ^^^^
+    ...<5 lines>...
+        by_name=by_name,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for FeeReceiptStudent
+  Input should be a valid dictionary or instance of FeeReceiptStudent [type=model_type, input_value=<app.models.models.Studen...t at 0x000001E85459C190>, input_type=Student]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+
+======================================================================
+ERROR: test_receipt_contains_fee_information (test_fee_receipt.FeeReceiptApiTests.test_receipt_contains_fee_information)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\tests\test_fee_receipt.py", line 140, in test_receipt_contains_fee_information
+    body = self.client.get(f"/fees/{fee.id}/receipt").json()
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 483, in get
+    return super().get(
+           ~~~~~~~~~~~^
+        url,
+        ^^^^
+    ...<6 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1113, in get
+    return self.request(
+           ~~~~~~~~~~~~^
+        "GET",
+        ^^^^^^
+    ...<7 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 455, in request
+    return super().request(
+           ~~~~~~~~~~~~~~~^
+        method,
+        ^^^^^^^
+    ...<11 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 797, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 980, in send
+    response = self._send_handling_auth(
+        request,
+    ...<2 lines>...
+        history=[],
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1008, in _send_handling_auth
+    response = self._send_handling_redirects(
+        request,
+        follow_redirects=follow_redirects,
+        history=history,
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1043, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1076, in _send_single_request
+    response = transport.handle_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 354, in handle_request
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 351, in handle_request
+    portal.call(self.app, scope, receive, send)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 338, in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 454, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 396, in __get_result
+    raise self._exception
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 263, in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\routing.py", line 670, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1780, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2789, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1800, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1279, in handle
+    await app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 158, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 144, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 706, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 354, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2641, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1033, in run
+    result = context.run(func, *args)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\routers\fees.py", line 62, in get_fee_receipt_endpoint
+    return get_fee_receipt(db, fee_id)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\services\fee_receipts.py", line 17, in get_fee_receipt
+    student=FeeReceiptStudent.model_validate(student),
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\pydantic\main.py", line 732, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj,
+        ^^^^
+    ...<5 lines>...
+        by_name=by_name,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for FeeReceiptStudent
+  Input should be a valid dictionary or instance of FeeReceiptStudent [type=model_type, input_value=<app.models.models.Studen...t at 0x000001E85459C550>, input_type=Student]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+
+======================================================================
+ERROR: test_receipt_contains_student_information (test_fee_receipt.FeeReceiptApiTests.test_receipt_contains_student_information)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\tests\test_fee_receipt.py", line 161, in test_receipt_contains_student_information
+    body = self.client.get(f"/fees/{fee.id}/receipt").json()["student"]
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 483, in get
+    return super().get(
+           ~~~~~~~~~~~^
+        url,
+        ^^^^
+    ...<6 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1113, in get
+    return self.request(
+           ~~~~~~~~~~~~^
+        "GET",
+        ^^^^^^
+    ...<7 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 455, in request
+    return super().request(
+           ~~~~~~~~~~~~~~~^
+        method,
+        ^^^^^^^
+    ...<11 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 797, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 980, in send
+    response = self._send_handling_auth(
+        request,
+    ...<2 lines>...
+        history=[],
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1008, in _send_handling_auth
+    response = self._send_handling_redirects(
+        request,
+        follow_redirects=follow_redirects,
+        history=history,
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1043, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1076, in _send_single_request
+    response = transport.handle_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 354, in handle_request
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 351, in handle_request
+    portal.call(self.app, scope, receive, send)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 338, in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 454, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 396, in __get_result
+    raise self._exception
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 263, in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\routing.py", line 670, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1780, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2789, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1800, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1279, in handle
+    await app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 158, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 144, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 706, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 354, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2641, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1033, in run
+    result = context.run(func, *args)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\routers\fees.py", line 62, in get_fee_receipt_endpoint
+    return get_fee_receipt(db, fee_id)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\services\fee_receipts.py", line 17, in get_fee_receipt
+    student=FeeReceiptStudent.model_validate(student),
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\pydantic\main.py", line 732, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj,
+        ^^^^
+    ...<5 lines>...
+        by_name=by_name,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for FeeReceiptStudent
+  Input should be a valid dictionary or instance of FeeReceiptStudent [type=model_type, input_value=<app.models.models.Studen...t at 0x000001E85465A520>, input_type=Student]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+
+======================================================================
+ERROR: test_receipt_reports_pending_fee (test_fee_receipt.FeeReceiptApiTests.test_receipt_reports_pending_fee)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\tests\test_fee_receipt.py", line 209, in test_receipt_reports_pending_fee
+    receipt_fee = self.client.get(f"/fees/{fee.id}/receipt").json()["fee"]
+                  ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 483, in get
+    return super().get(
+           ~~~~~~~~~~~^
+        url,
+        ^^^^
+    ...<6 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1113, in get
+    return self.request(
+           ~~~~~~~~~~~~^
+        "GET",
+        ^^^^^^
+    ...<7 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 455, in request
+    return super().request(
+           ~~~~~~~~~~~~~~~^
+        method,
+        ^^^^^^^
+    ...<11 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 797, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 980, in send
+    response = self._send_handling_auth(
+        request,
+    ...<2 lines>...
+        history=[],
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1008, in _send_handling_auth
+    response = self._send_handling_redirects(
+        request,
+        follow_redirects=follow_redirects,
+        history=history,
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1043, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1076, in _send_single_request
+    response = transport.handle_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 354, in handle_request
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 351, in handle_request
+    portal.call(self.app, scope, receive, send)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 338, in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 454, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 396, in __get_result
+    raise self._exception
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 263, in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\routing.py", line 670, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1780, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2789, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1800, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1279, in handle
+    await app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 158, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 144, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 706, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 354, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2641, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1033, in run
+    result = context.run(func, *args)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\routers\fees.py", line 62, in get_fee_receipt_endpoint
+    return get_fee_receipt(db, fee_id)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\services\fee_receipts.py", line 17, in get_fee_receipt
+    student=FeeReceiptStudent.model_validate(student),
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\pydantic\main.py", line 732, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj,
+        ^^^^
+    ...<5 lines>...
+        by_name=by_name,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for FeeReceiptStudent
+  Input should be a valid dictionary or instance of FeeReceiptStudent [type=model_type, input_value=<app.models.models.Studen...t at 0x000001E854659220>, input_type=Student]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+
+======================================================================
+ERROR: test_receipt_response_shape (test_fee_receipt.FeeReceiptApiTests.test_receipt_response_shape)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\tests\test_fee_receipt.py", line 219, in test_receipt_response_shape
+    body = self.client.get(f"/fees/{fee.id}/receipt").json()
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 483, in get
+    return super().get(
+           ~~~~~~~~~~~^
+        url,
+        ^^^^
+    ...<6 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1113, in get
+    return self.request(
+           ~~~~~~~~~~~~^
+        "GET",
+        ^^^^^^
+    ...<7 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 455, in request
+    return super().request(
+           ~~~~~~~~~~~~~~~^
+        method,
+        ^^^^^^^
+    ...<11 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 797, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 980, in send
+    response = self._send_handling_auth(
+        request,
+    ...<2 lines>...
+        history=[],
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1008, in _send_handling_auth
+    response = self._send_handling_redirects(
+        request,
+        follow_redirects=follow_redirects,
+        history=history,
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1043, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1076, in _send_single_request
+    response = transport.handle_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 354, in handle_request
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 351, in handle_request
+    portal.call(self.app, scope, receive, send)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 338, in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 454, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 396, in __get_result
+    raise self._exception
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 263, in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\routing.py", line 670, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1780, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2789, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1800, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1279, in handle
+    await app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 158, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 144, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 706, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 354, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2641, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1033, in run
+    result = context.run(func, *args)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\routers\fees.py", line 62, in get_fee_receipt_endpoint
+    return get_fee_receipt(db, fee_id)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\services\fee_receipts.py", line 17, in get_fee_receipt
+    student=FeeReceiptStudent.model_validate(student),
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\pydantic\main.py", line 732, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj,
+        ^^^^
+    ...<5 lines>...
+        by_name=by_name,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for FeeReceiptStudent
+  Input should be a valid dictionary or instance of FeeReceiptStudent [type=model_type, input_value=<app.models.models.Studen...t at 0x000001E8546568B0>, input_type=Student]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+
+======================================================================
+ERROR: test_receipt_uses_fee_student_relationship (test_fee_receipt.FeeReceiptApiTests.test_receipt_uses_fee_student_relationship)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\tests\test_fee_receipt.py", line 247, in test_receipt_uses_fee_student_relationship
+    body = self.client.get(f"/fees/{fee_a.id}/receipt").json()
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 483, in get
+    return super().get(
+           ~~~~~~~~~~~^
+        url,
+        ^^^^
+    ...<6 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1113, in get
+    return self.request(
+           ~~~~~~~~~~~~^
+        "GET",
+        ^^^^^^
+    ...<7 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 455, in request
+    return super().request(
+           ~~~~~~~~~~~~~~~^
+        method,
+        ^^^^^^^
+    ...<11 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 797, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 980, in send
+    response = self._send_handling_auth(
+        request,
+    ...<2 lines>...
+        history=[],
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1008, in _send_handling_auth
+    response = self._send_handling_redirects(
+        request,
+        follow_redirects=follow_redirects,
+        history=history,
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1043, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1076, in _send_single_request
+    response = transport.handle_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 354, in handle_request
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 351, in handle_request
+    portal.call(self.app, scope, receive, send)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 338, in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 454, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 396, in __get_result
+    raise self._exception
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 263, in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\routing.py", line 670, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1780, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2789, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1800, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1279, in handle
+    await app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 158, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 144, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 706, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 354, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2641, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1033, in run
+    result = context.run(func, *args)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\routers\fees.py", line 62, in get_fee_receipt_endpoint
+    return get_fee_receipt(db, fee_id)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\services\fee_receipts.py", line 17, in get_fee_receipt
+    student=FeeReceiptStudent.model_validate(student),
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\pydantic\main.py", line 732, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj,
+        ^^^^
+    ...<5 lines>...
+        by_name=by_name,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for FeeReceiptStudent
+  Input should be a valid dictionary or instance of FeeReceiptStudent [type=model_type, input_value=<app.models.models.Studen...t at 0x000001E854657570>, input_type=Student]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+
+======================================================================
+ERROR: test_receipt_without_class_returns_null_class (test_fee_receipt.FeeReceiptApiTests.test_receipt_without_class_returns_null_class)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\tests\test_fee_receipt.py", line 190, in test_receipt_without_class_returns_null_class
+    body = self.client.get(f"/fees/{fee.id}/receipt").json()
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 483, in get
+    return super().get(
+           ~~~~~~~~~~~^
+        url,
+        ^^^^
+    ...<6 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1113, in get
+    return self.request(
+           ~~~~~~~~~~~~^
+        "GET",
+        ^^^^^^
+    ...<7 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 455, in request
+    return super().request(
+           ~~~~~~~~~~~~~~~^
+        method,
+        ^^^^^^^
+    ...<11 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 797, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 980, in send
+    response = self._send_handling_auth(
+        request,
+    ...<2 lines>...
+        history=[],
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1008, in _send_handling_auth
+    response = self._send_handling_redirects(
+        request,
+        follow_redirects=follow_redirects,
+        history=history,
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1043, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1076, in _send_single_request
+    response = transport.handle_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 354, in handle_request
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 351, in handle_request
+    portal.call(self.app, scope, receive, send)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 338, in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 454, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 396, in __get_result
+    raise self._exception
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 263, in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\routing.py", line 670, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1780, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2789, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1800, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1279, in handle
+    await app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 158, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 144, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 706, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 354, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2641, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1033, in run
+    result = context.run(func, *args)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\routers\fees.py", line 62, in get_fee_receipt_endpoint
+    return get_fee_receipt(db, fee_id)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\services\fee_receipts.py", line 17, in get_fee_receipt
+    student=FeeReceiptStudent.model_validate(student),
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\pydantic\main.py", line 732, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj,
+        ^^^^
+    ...<5 lines>...
+        by_name=by_name,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for FeeReceiptStudent
+  Input should be a valid dictionary or instance of FeeReceiptStudent [type=model_type, input_value=<app.models.models.Studen...t at 0x000001E854636950>, input_type=Student]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+
+======================================================================
+ERROR: test_successful_receipt_response (test_fee_receipt.FeeReceiptApiTests.test_successful_receipt_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\tests\test_fee_receipt.py", line 115, in test_successful_receipt_response
+    response = self.client.get(f"/fees/{fee.id}/receipt")
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 483, in get
+    return super().get(
+           ~~~~~~~~~~~^
+        url,
+        ^^^^
+    ...<6 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1113, in get
+    return self.request(
+           ~~~~~~~~~~~~^
+        "GET",
+        ^^^^^^
+    ...<7 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 455, in request
+    return super().request(
+           ~~~~~~~~~~~~~~~^
+        method,
+        ^^^^^^^
+    ...<11 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 797, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 980, in send
+    response = self._send_handling_auth(
+        request,
+    ...<2 lines>...
+        history=[],
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1008, in _send_handling_auth
+    response = self._send_handling_redirects(
+        request,
+        follow_redirects=follow_redirects,
+        history=history,
+    )
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1043, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\httpx2\_client.py", line 1076, in _send_single_request
+    response = transport.handle_request(request)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 354, in handle_request
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\testclient.py", line 351, in handle_request
+    portal.call(self.app, scope, receive, send)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 338, in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 454, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\qasim\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\_base.py", line 396, in __get_result
+    raise self._exception
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\from_thread.py", line 263, in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\applications.py", line 1163, in __call__
+    await super().__call__(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\applications.py", line 96, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 186, in __call__
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\middleware\exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\middleware\asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\routing.py", line 670, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2734, in app
+    await route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1780, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 2789, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1800, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 1279, in handle
+    await app(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 158, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 144, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 706, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\fastapi\routing.py", line 354, in run_endpoint_function
+    return await run_in_threadpool(dependant.call, **values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\starlette\concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 2641, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\anyio\_backends\_asyncio.py", line 1033, in run
+    result = context.run(func, *args)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\routers\fees.py", line 62, in get_fee_receipt_endpoint
+    return get_fee_receipt(db, fee_id)
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\app\services\fee_receipts.py", line 17, in get_fee_receipt
+    student=FeeReceiptStudent.model_validate(student),
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\qasim\OneDrive\Desktop\projects\student-management-system\backend\venv\Lib\site-packages\pydantic\main.py", line 732, in model_validate
+    return cls.__pydantic_validator__.validate_python(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        obj,
+        ^^^^
+    ...<5 lines>...
+        by_name=by_name,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for FeeReceiptStudent
+  Input should be a valid dictionary or instance of FeeReceiptStudent [type=model_type, input_value=<app.models.models.Studen...t at 0x000001E854832C60>, input_type=Student]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
+
+----------------------------------------------------------------------
+Ran 11 tests in 5.515s
+
+FAILED (errors=9)

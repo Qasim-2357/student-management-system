@@ -6,8 +6,10 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.models import User
+from app.schemas.fee_receipt import FeeReceiptResponse
 from app.schemas.fee import FeeCreate, FeeListResponse, FeeResponse, FeeStatus, FeeUpdate
 from app.security import get_current_admin, get_current_user
+from app.services.fee_receipts import get_fee_receipt
 from app.services.fees import create_fee, delete_fee, get_fee_or_404, list_fees, update_fee
 
 router = APIRouter(prefix="/fees", tags=["Fees"])
@@ -49,6 +51,15 @@ def list_fees_endpoint(
         page_size=page_size,
         total_pages=ceil(total / page_size) if total else 0,
     )
+
+
+@router.get("/{fee_id}/receipt", response_model=FeeReceiptResponse)
+def get_fee_receipt_endpoint(
+    fee_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return get_fee_receipt(db, fee_id)
 
 
 @router.get("/{fee_id}", response_model=FeeResponse)
