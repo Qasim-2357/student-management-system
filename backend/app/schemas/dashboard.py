@@ -40,6 +40,31 @@ class AdminDashboardResponse(BaseModel):
     upcoming_exams: list[UpcomingExamItem] = Field(default_factory=list)
 
 
+class StudentCourseCount(BaseModel):
+    course: str
+    count: int
+
+
+class DashboardOverviewResponse(BaseModel):
+    total_students: int
+    students_by_course: list[StudentCourseCount] = Field(default_factory=list)
+    total_teachers: int
+    total_classes: int
+    total_subjects: int
+    total_exams: int
+    total_marks_records: int
+    total_attendance_records: int
+    present_count: int
+    absent_count: int
+    attendance_percentage: float
+    total_assignments: int
+    total_submissions: int
+    total_fee_records: int
+    total_fee_amount: float
+    total_paid_amount: float
+    total_due_amount: float
+
+
 class TeacherInfo(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

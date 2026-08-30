@@ -20,10 +20,12 @@ from app.schemas.dashboard import (
     AdminDashboardResponse,
     AssignedClassItem,
     AssignedSubjectItem,
+    DashboardOverviewResponse,
     RecentStudentItem,
     StudentDashboardResponse,
     StudentInfo,
     StudentMarkItem,
+    StudentCourseCount,
     TeacherDashboardResponse,
     TeacherInfo,
     UpcomingExamItem,
@@ -113,6 +115,73 @@ def get_admin_dashboard(db: Session) -> AdminDashboardResponse:
         overall_attendance_percentage=overall_attendance_percentage,
         recent_students=recent_student_items,
         upcoming_exams=upcoming_exam_items,
+    )
+
+
+def get_dashboard_overview(db: Session) -> DashboardOverviewResponse:
+    total_students = db.scalar(select(func.count()).select_from(Student)) or 0
+    students_by_course = db.execute(
+        select(Student.course, func.count(Student.id))
+        .group_by(Student.course)
+        .order_by(Student.course.asc())
+    ).all()
+
+    total_teachers = db.scalar(select(func.count()).select_from(Teacher)) or 0
+    total_classes = db.scalar(select(func.count()).select_from(AcademicClass)) or 0
+    total_subjects = db.scalar(select(func.count()).select_from(Subject)) or 0
+    total_exams = db.scalar(select(func.count()).select_from(Exam)) or 0
+    total_marks_records = db.scalar(select(func.count()).select_from(Mark)) or 0
+
+    total_attendance_records = (
+        db.scalar(select(func.count()).select_from(Attendance)) or 0
+    )
+    present_count = db.scalar(
+        select(func.count())
+        .select_from(Attendance)
+        .where(Attendance.status == "present")
+    ) or 0
+    absent_count = db.scalar(
+        select(func.count())
+        .select_from(Attendance)
+        .where(Attendance.status == "absent")
+    ) or 0
+
+    total_assignments = db.scalar(select(func.count()).select_from(Assignment)) or 0
+    total_submissions = (
+        db.scalar(select(func.count()).select_from(AssignmentSubmission)) or 0
+    )
+
+    total_fee_records = db.scalar(select(func.count()).select_from(Fee)) or 0
+    total_fee_amount = db.scalar(select(func.sum(Fee.amount))) or 0.0
+    total_paid_amount = db.scalar(select(func.sum(Fee.paid_amount))) or 0.0
+    total_due_amount = db.scalar(
+        select(func.sum(Fee.amount - Fee.paid_amount))
+    ) or 0.0
+
+    return DashboardOverviewResponse(
+        total_students=total_students,
+        students_by_course=[
+            StudentCourseCount(course=course, count=count)
+            for course, count in students_by_course
+        ],
+        total_teachers=total_teachers,
+        total_classes=total_classes,
+        total_subjects=total_subjects,
+        total_exams=total_exams,
+        total_marks_records=total_marks_records,
+        total_attendance_records=total_attendance_records,
+        present_count=present_count,
+        absent_count=absent_count,
+        attendance_percentage=_safe_percentage(
+            present_count,
+            total_attendance_records,
+        ),
+        total_assignments=total_assignments,
+        total_submissions=total_submissions,
+        total_fee_records=total_fee_records,
+        total_fee_amount=round(float(total_fee_amount), 2),
+        total_paid_amount=round(float(total_paid_amount), 2),
+        total_due_amount=round(float(total_due_amount), 2),
     )
 
 

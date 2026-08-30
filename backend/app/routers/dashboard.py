@@ -6,17 +6,27 @@ from app.database import get_db
 from app.models.models import Student, Teacher, User
 from app.schemas.dashboard import (
     AdminDashboardResponse,
+    DashboardOverviewResponse,
     StudentDashboardResponse,
     TeacherDashboardResponse,
 )
 from app.security import get_current_admin, get_current_student, get_current_teacher
 from app.services.dashboard import (
     get_admin_dashboard,
+    get_dashboard_overview,
     get_student_dashboard,
     get_teacher_dashboard,
 )
 
 router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
+
+
+@router.get("/overview", response_model=DashboardOverviewResponse)
+def get_dashboard_overview_endpoint(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_admin),
+):
+    return get_dashboard_overview(db)
 
 
 @router.get("/admin", response_model=AdminDashboardResponse)
