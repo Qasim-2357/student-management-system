@@ -51,6 +51,20 @@ def get_teacher_dashboard_endpoint(
     return get_teacher_dashboard(db, teacher)
 
 
+@router.get("/teacher/overview", response_model=TeacherDashboardResponse)
+def get_teacher_dashboard_overview_endpoint(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_teacher),
+):
+    teacher = db.scalar(select(Teacher).where(Teacher.user_id == current_user.id))
+    if teacher is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Teacher profile not found for the current user",
+        )
+    return get_teacher_dashboard(db, teacher)
+
+
 @router.get("/student", response_model=StudentDashboardResponse)
 def get_student_dashboard_endpoint(
     db: Session = Depends(get_db),
