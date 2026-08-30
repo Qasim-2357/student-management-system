@@ -23,6 +23,7 @@ from app.schemas.dashboard import (
     DashboardOverviewResponse,
     RecentStudentItem,
     StudentDashboardResponse,
+    StudentDashboardOverviewResponse,
     StudentInfo,
     StudentMarkItem,
     StudentCourseCount,
@@ -574,4 +575,45 @@ def get_student_dashboard(db: Session, student: Student) -> StudentDashboardResp
         total_fee_amount=round(total_fee_amount, 2),
         paid_fee_amount=round(paid_fee_amount, 2),
         due_fee_amount=due_fee_amount,
+    )
+
+
+def get_student_dashboard_overview(
+    db: Session,
+    student: Student,
+) -> StudentDashboardOverviewResponse:
+    dashboard = get_student_dashboard(db, student)
+    partial_fee_records = db.scalar(
+        select(func.count())
+        .select_from(Fee)
+        .where(
+            Fee.student_id == student.id,
+            Fee.paid_amount > 0,
+            Fee.paid_amount < Fee.amount,
+        )
+    ) or 0
+
+    return StudentDashboardOverviewResponse(
+        student=dashboard.student,
+        academic_class=dashboard.academic_class,
+        total_marks_records=dashboard.total_results,
+        total_marks_obtained=dashboard.marks_obtained,
+        total_possible_marks=dashboard.total_possible_marks,
+        percentage=dashboard.percentage,
+        overall_grade=dashboard.overall_grade,
+        total_attendance_records=dashboard.total_attendance_records,
+        present_count=dashboard.present_attendance_records,
+        absent_count=dashboard.absent_attendance_records,
+        attendance_percentage=dashboard.attendance_percentage,
+        total_assignments=dashboard.total_assignments,
+        submitted_assignments=dashboard.submitted_assignments,
+        pending_assignments=dashboard.pending_assignments,
+        total_fee_records=dashboard.total_fee_records,
+        total_fee_amount=dashboard.total_fee_amount,
+        total_paid_amount=dashboard.paid_fee_amount,
+        total_due_amount=dashboard.due_fee_amount,
+        paid_fee_records=dashboard.paid_fee_records,
+        partial_fee_records=partial_fee_records,
+        pending_fee_records=dashboard.pending_fee_records - partial_fee_records,
+        upcoming_exams=dashboard.upcoming_exams,
     )

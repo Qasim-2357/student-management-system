@@ -174,3 +174,33 @@ class StudentDashboardResponse(BaseModel):
     total_fee_amount: float
     paid_fee_amount: float
     due_fee_amount: float
+
+
+class StudentDashboardOverviewResponse(BaseModel):
+    student: StudentInfo
+    academic_class: ClassResponse | None = None
+
+    total_marks_records: int
+    total_marks_obtained: float
+    total_possible_marks: int
+    percentage: float
+    overall_grade: str
+
+    total_attendance_records: int
+    present_count: int
+    absent_count: int
+    attendance_percentage: float
+
+    total_assignments: int
+    submitted_assignments: int
+    pending_assignments: int
+
+    total_fee_records: int
+    total_fee_amount: float
+    total_paid_amount: float
+    total_due_amount: float
+    paid_fee_records: int
+    partial_fee_records: int
+    pending_fee_records: int
+
+    upcoming_exams: list[UpcomingExamItem] = Field(default_factory=list)

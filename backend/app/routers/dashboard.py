@@ -8,6 +8,7 @@ from app.schemas.dashboard import (
     AdminDashboardResponse,
     DashboardOverviewResponse,
     StudentDashboardResponse,
+    StudentDashboardOverviewResponse,
     TeacherDashboardResponse,
 )
 from app.security import get_current_admin, get_current_student, get_current_teacher
@@ -15,6 +16,7 @@ from app.services.dashboard import (
     get_admin_dashboard,
     get_dashboard_overview,
     get_student_dashboard,
+    get_student_dashboard_overview,
     get_teacher_dashboard,
 )
 
@@ -77,3 +79,17 @@ def get_student_dashboard_endpoint(
             detail="Student profile not found for the current user",
         )
     return get_student_dashboard(db, student)
+
+
+@router.get("/student/overview", response_model=StudentDashboardOverviewResponse)
+def get_student_dashboard_overview_endpoint(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_student),
+):
+    student = db.scalar(select(Student).where(Student.user_id == current_user.id))
+    if student is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Student profile not found for the current user",
+        )
+    return get_student_dashboard_overview(db, student)
