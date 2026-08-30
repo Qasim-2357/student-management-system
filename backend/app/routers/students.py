@@ -26,6 +26,10 @@ from app.services.students import (
     update_student,
 )
 from app.services.attendance_reports import get_student_attendance_report
+from app.services.student_authorization import (
+    authorize_student_access,
+    authorized_student_ids,
+)
 from app.services.student_reports import get_student_report
 
 router = APIRouter(prefix="/students", tags=["Students"])
@@ -51,6 +55,7 @@ def list_students_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    scoped_student_ids = authorized_student_ids(db, current_user)
     students, total = list_students(
         db,
         search=search,
@@ -59,6 +64,7 @@ def list_students_endpoint(
         academic_class_id=academic_class_id,
         page=page,
         page_size=page_size,
+        student_ids=scoped_student_ids,
     )
     return StudentListResponse(
         items=students,
@@ -75,6 +81,7 @@ def get_student_profile_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    authorize_student_access(db, student_id, current_user)
     return get_student_profile_or_404(db, student_id)
 
 
@@ -84,6 +91,7 @@ def get_student_marksheet_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    authorize_student_access(db, student_id, current_user)
     return get_student_marksheet(db, student_id)
 
 
@@ -96,6 +104,7 @@ def get_student_attendance_report_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    authorize_student_access(db, student_id, current_user)
     return get_student_attendance_report(db, student_id)
 
 
@@ -105,6 +114,7 @@ def get_student_report_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    authorize_student_access(db, student_id, current_user)
     return get_student_report(db, student_id)
 
 
@@ -114,6 +124,7 @@ def get_student_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    authorize_student_access(db, student_id, current_user)
     return get_student_or_404(db, student_id)
 
 

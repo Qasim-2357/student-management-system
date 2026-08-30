@@ -21,6 +21,11 @@ from app.services.attendance import (
     list_attendance,
     update_attendance,
 )
+from app.services.student_authorization import (
+    authorize_attendance_access,
+    authorize_student_access,
+    authorized_student_ids,
+)
 
 router = APIRouter(prefix="/attendance", tags=["Attendance"])
 
@@ -44,6 +49,10 @@ def list_attendance_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    scoped_student_ids = authorized_student_ids(db, current_user)
+    if student_id is not None:
+        authorize_student_access(db, student_id, current_user)
+        scoped_student_ids = [student_id]
     records, total = list_attendance(
         db,
         student_id=student_id,
@@ -51,6 +60,7 @@ def list_attendance_endpoint(
         attendance_status=attendance_status,
         page=page,
         page_size=page_size,
+        student_ids=scoped_student_ids,
     )
     return AttendanceListResponse(
         items=records,
@@ -67,7 +77,9 @@ def get_attendance_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return get_attendance_or_404(db, attendance_id)
+    attendance = get_attendance_or_404(db, attendance_id)
+    authorize_attendance_access(db, attendance, current_user)
+    return attendance
 
 
 @router.patch("/{attendance_id}", response_model=AttendanceResponse)

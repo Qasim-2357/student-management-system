@@ -96,8 +96,11 @@ def list_attendance(
     attendance_status: str | None,
     page: int,
     page_size: int,
+    student_ids: list[int] | None = None,
 ) -> tuple[list[Attendance], int]:
     filters = []
+    if student_ids is not None:
+        filters.append(Attendance.student_id.in_(student_ids))
     if student_id is not None:
         filters.append(Attendance.student_id == student_id)
     if attendance_date is not None:

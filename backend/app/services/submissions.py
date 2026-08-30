@@ -138,10 +138,13 @@ def list_submissions(
     status: str | None,
     page: int,
     page_size: int,
+    student_ids: list[int] | None = None,
 ) -> tuple[list[AssignmentSubmission], int]:
     _ensure_assignment_exists(db, assignment_id)
 
     filters = [AssignmentSubmission.assignment_id == assignment_id]
+    if student_ids is not None:
+        filters.append(AssignmentSubmission.student_id.in_(student_ids))
     if student_id is not None:
         filters.append(AssignmentSubmission.student_id == student_id)
     if status is not None:

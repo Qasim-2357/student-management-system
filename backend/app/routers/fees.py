@@ -11,6 +11,11 @@ from app.schemas.fee import FeeCreate, FeeListResponse, FeeResponse, FeeStatus, 
 from app.security import get_current_admin, get_current_user
 from app.services.fee_receipts import generate_fee_receipt_pdf, get_fee_receipt
 from app.services.fees import create_fee, delete_fee, get_fee_or_404, list_fees, update_fee
+from app.services.student_authorization import (
+    authorize_fee_access,
+    authorize_student_access,
+    authorized_student_ids,
+)
 
 router = APIRouter(prefix="/fees", tags=["Fees"])
 
@@ -35,6 +40,10 @@ def list_fees_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    scoped_student_ids = authorized_student_ids(db, current_user)
+    if student_id is not None and scoped_student_ids is not None:
+        authorize_student_access(db, student_id, current_user)
+        scoped_student_ids = [student_id]
     fees, total = list_fees(
         db,
         search=search,
@@ -43,6 +52,7 @@ def list_fees_endpoint(
         due_date=due_date,
         page=page,
         page_size=page_size,
+        student_ids=scoped_student_ids,
     )
     return FeeListResponse(
         items=fees,
@@ -59,6 +69,8 @@ def get_fee_receipt_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    fee = get_fee_or_404(db, fee_id)
+    authorize_fee_access(db, fee, current_user)
     return get_fee_receipt(db, fee_id)
 
 
@@ -68,6 +80,8 @@ def get_fee_receipt_pdf_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    fee = get_fee_or_404(db, fee_id)
+    authorize_fee_access(db, fee, current_user)
     pdf_content = generate_fee_receipt_pdf(db, fee_id)
     return Response(
         content=pdf_content,
@@ -84,7 +98,9 @@ def get_fee_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return get_fee_or_404(db, fee_id)
+    fee = get_fee_or_404(db, fee_id)
+    authorize_fee_access(db, fee, current_user)
+    return fee
 
 
 @router.patch("/{fee_id}", response_model=FeeResponse)

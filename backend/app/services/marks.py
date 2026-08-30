@@ -131,8 +131,11 @@ def list_marks(
     subject_id: int | None,
     page: int,
     page_size: int,
+    student_ids: list[int] | None = None,
 ) -> tuple[list[Mark], int]:
     filters = []
+    if student_ids is not None:
+        filters.append(Mark.student_id.in_(student_ids))
     if exam_id is not None:
         filters.append(Mark.exam_id == exam_id)
     if student_id is not None:

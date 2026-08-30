@@ -10,6 +10,7 @@ from app.services.charts import (
     get_student_exam_chart,
     get_student_marks_chart,
 )
+from app.services.student_authorization import authorize_student_access
 
 router = APIRouter(tags=["Charts"])
 
@@ -20,6 +21,7 @@ def get_student_marks_chart_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    authorize_student_access(db, student_id, current_user)
     return get_student_marks_chart(db, student_id)
 
 
@@ -29,6 +31,7 @@ def get_student_exam_chart_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    authorize_student_access(db, student_id, current_user)
     return get_student_exam_chart(db, student_id)
 
 
@@ -38,4 +41,5 @@ def get_student_attendance_chart_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    authorize_student_access(db, student_id, current_user)
     return get_student_attendance_chart(db, student_id)

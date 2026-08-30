@@ -14,6 +14,11 @@ from app.services.marks import (
     list_marks,
     update_mark,
 )
+from app.services.student_authorization import (
+    authorize_mark_access,
+    authorize_student_access,
+    authorized_student_ids,
+)
 
 router = APIRouter(prefix="/marks", tags=["Marks"])
 
@@ -38,6 +43,10 @@ def list_marks_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    scoped_student_ids = authorized_student_ids(db, current_user)
+    if student_id is not None:
+        authorize_student_access(db, student_id, current_user)
+        scoped_student_ids = [student_id]
     marks, total = list_marks(
         db,
         search=search,
@@ -46,6 +55,7 @@ def list_marks_endpoint(
         subject_id=subject_id,
         page=page,
         page_size=page_size,
+        student_ids=scoped_student_ids,
     )
     return MarkListResponse(
         items=marks,
@@ -62,7 +72,9 @@ def get_mark_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return get_mark_or_404(db, mark_id)
+    mark = get_mark_or_404(db, mark_id)
+    authorize_mark_access(db, mark, current_user)
+    return mark
 
 
 @router.patch("/{mark_id}", response_model=MarkResponse)

@@ -98,8 +98,11 @@ def list_fees(
     due_date: object | None,
     page: int,
     page_size: int,
+    student_ids: list[int] | None = None,
 ) -> tuple[list[Fee], int]:
     filters = []
+    if student_ids is not None:
+        filters.append(Fee.student_id.in_(student_ids))
     if student_id is not None:
         filters.append(Fee.student_id == student_id)
     if due_date is not None:

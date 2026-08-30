@@ -251,8 +251,11 @@ def list_students(
     academic_class_id: int | None,
     page: int,
     page_size: int,
+    student_ids: list[int] | None = None,
 ) -> tuple[list[Student], int]:
     filters = []
+    if student_ids is not None:
+        filters.append(Student.id.in_(student_ids))
     if search:
         pattern = f"%{search.strip()}%"
         filters.append(

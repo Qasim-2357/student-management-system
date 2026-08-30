@@ -20,6 +20,13 @@ from app.services.submissions import (
     list_submissions,
     update_submission,
 )
+from app.services.student_authorization import (
+    authorize_assignment_access,
+    authorize_submission_access,
+    authorize_student_access,
+    authorized_student_ids,
+)
+from app.services.assignments import get_assignment_or_404
 
 router = APIRouter(tags=["Assignments"])
 
@@ -48,6 +55,12 @@ def list_submissions_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    assignment = get_assignment_or_404(db, assignment_id)
+    authorize_assignment_access(db, assignment, current_user)
+    scoped_student_ids = authorized_student_ids(db, current_user)
+    if student_id is not None:
+        authorize_student_access(db, student_id, current_user)
+        scoped_student_ids = [student_id]
     submissions, total = list_submissions(
         db,
         assignment_id=assignment_id,
@@ -55,6 +68,7 @@ def list_submissions_endpoint(
         status=status,
         page=page,
         page_size=page_size,
+        student_ids=scoped_student_ids,
     )
     return SubmissionListResponse(
         items=submissions,
@@ -71,7 +85,9 @@ def get_submission_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return get_submission_or_404(db, submission_id)
+    submission = get_submission_or_404(db, submission_id)
+    authorize_submission_access(db, submission, current_user)
+    return submission
 
 
 @router.patch("/submissions/{submission_id}", response_model=SubmissionResponse)
