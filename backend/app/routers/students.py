@@ -7,6 +7,7 @@ from app.database import get_db
 from app.models.models import User
 from app.schemas.attendance_report import AttendanceReportResponse
 from app.schemas.marksheet import MarksheetResponse
+from app.schemas.student_report import StudentReportResponse
 from app.schemas.student import (
     StudentCreate,
     StudentListResponse,
@@ -25,6 +26,7 @@ from app.services.students import (
     update_student,
 )
 from app.services.attendance_reports import get_student_attendance_report
+from app.services.student_reports import get_student_report
 
 router = APIRouter(prefix="/students", tags=["Students"])
 
@@ -95,6 +97,15 @@ def get_student_attendance_report_endpoint(
     current_user: User = Depends(get_current_user),
 ):
     return get_student_attendance_report(db, student_id)
+
+
+@router.get("/{student_id}/report", response_model=StudentReportResponse)
+def get_student_report_endpoint(
+    student_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return get_student_report(db, student_id)
 
 
 @router.get("/{student_id}", response_model=StudentResponse)
