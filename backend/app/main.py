@@ -5,6 +5,7 @@ from app.routers.auth import router as auth_router
 from app.routers.authorization import router as authorization_router
 from app.routers.charts import router as charts_router
 from app.routers.classes import router as classes_router
+from app.routers.dashboard import router as dashboard_router
 from app.routers.students import router as students_router
 from app.routers.subjects import router as subjects_router
 from app.routers.submissions import router as submissions_router
@@ -23,6 +24,7 @@ app.include_router(students_router)
 app.include_router(teachers_router)
 app.include_router(classes_router)
 app.include_router(subjects_router)
+app.include_router(dashboard_router)
 app.include_router(attendance_router)
 app.include_router(exams_router)
 app.include_router(assignments_router)
