@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.models import User
+from app.schemas.marksheet import MarksheetResponse
 from app.schemas.student import (
     StudentCreate,
     StudentListResponse,
@@ -16,6 +17,7 @@ from app.security import get_current_admin, get_current_user
 from app.services.students import (
     create_student,
     delete_student,
+    get_student_marksheet,
     get_student_or_404,
     get_student_profile_or_404,
     list_students,
@@ -70,6 +72,15 @@ def get_student_profile_endpoint(
     current_user: User = Depends(get_current_user),
 ):
     return get_student_profile_or_404(db, student_id)
+
+
+@router.get("/{student_id}/marksheet", response_model=MarksheetResponse)
+def get_student_marksheet_endpoint(
+    student_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return get_student_marksheet(db, student_id)
 
 
 @router.get("/{student_id}", response_model=StudentResponse)

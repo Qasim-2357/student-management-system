@@ -3,24 +3,9 @@ from sqlalchemy.orm import Session
 
 from app.models.models import Mark
 from app.schemas.grade import MarkGradeResponse, StudentGradeItem, StudentGradesResponse
+from app.services.grading import GRADE_THRESHOLDS, calculate_grade
 from app.services.marks import get_mark_or_404
 from app.services.students import get_student_or_404
-
-GRADE_THRESHOLDS = (
-    (90, "A+"),
-    (80, "A"),
-    (70, "B"),
-    (60, "C"),
-    (50, "D"),
-    (0, "F"),
-)
-
-
-def calculate_grade(marks: float) -> str:
-    for threshold, grade in GRADE_THRESHOLDS:
-        if marks >= threshold:
-            return grade
-    return "F"
 
 
 def get_mark_grade(db: Session, mark_id: int) -> MarkGradeResponse:
