@@ -1,4 +1,4 @@
-from sqlalchemy import or_, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
 
 from app.models.models import (
@@ -55,22 +55,13 @@ def get_student_report(db: Session, student_id: int) -> StudentReportResponse:
     submission_by_assignment = {
         submission.assignment_id: submission for submission in submissions
     }
-    assignment_filters = []
-    if student.academic_class_id is not None:
-        assignment_filters.append(
-            Assignment.academic_class_id == student.academic_class_id
-        )
-    if submission_by_assignment:
-        assignment_filters.append(
-            Assignment.id.in_(submission_by_assignment)
-        )
     assignments = (
         db.scalars(
             select(Assignment)
-            .where(or_(*assignment_filters))
+            .where(Assignment.academic_class_id == student.academic_class_id)
             .order_by(Assignment.due_date.asc(), Assignment.id.asc())
         ).all()
-        if assignment_filters
+        if student.academic_class_id is not None
         else []
     )
 

@@ -1,5 +1,5 @@
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.models.models import Attendance, Mark
 from app.schemas.charts import (
@@ -22,6 +22,7 @@ def get_student_marks_chart(db: Session, student_id: int) -> MarksChartResponse:
     marks = db.scalars(
         select(Mark)
         .where(Mark.student_id == student_id)
+        .options(selectinload(Mark.subject))
         .order_by(Mark.subject_id.asc(), Mark.id.asc())
     ).all()
 
@@ -57,6 +58,7 @@ def get_student_exam_chart(db: Session, student_id: int) -> ExamChartResponse:
     marks = db.scalars(
         select(Mark)
         .where(Mark.student_id == student_id)
+        .options(selectinload(Mark.exam))
         .order_by(Mark.exam_id.asc(), Mark.id.asc())
     ).all()
 

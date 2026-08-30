@@ -336,19 +336,24 @@ def get_teacher_dashboard(db: Session, teacher: Teacher) -> TeacherDashboardResp
             total_attendance_records,
         )
 
+    student_counts_by_class = {}
+    if class_ids:
+        student_counts_by_class = dict(
+            db.execute(
+                select(Student.academic_class_id, func.count(Student.id))
+                .where(Student.academic_class_id.in_(class_ids))
+                .group_by(Student.academic_class_id)
+            ).all()
+        )
+
     assigned_class_items = []
     for academic_class in teacher.academic_classes:
-        class_student_count = db.scalar(
-            select(func.count())
-            .select_from(Student)
-            .where(Student.academic_class_id == academic_class.id)
-        ) or 0
         assigned_class_items.append(
             AssignedClassItem(
                 id=academic_class.id,
                 name=academic_class.name,
                 code=academic_class.code,
-                student_count=class_student_count,
+                student_count=student_counts_by_class.get(academic_class.id, 0),
             )
         )
     assigned_class_items.sort(key=lambda item: item.id)

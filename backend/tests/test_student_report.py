@@ -257,6 +257,100 @@ class StudentReportApiTests(unittest.TestCase):
         self.assertEqual(body["fees"]["total_paid_amount"], 250.0)
         self.assertEqual(body["fees"]["total_due_amount"], 750.0)
 
+    def test_report_includes_only_assignments_from_student_class(self):
+        student_class = self._create_class()
+        other_class = self._create_class()
+        student = self._create_student(academic_class_id=student_class.id)
+        subject = self._create_subject()
+        assignments = [
+            Assignment(
+                title="Student Class Assignment",
+                description=None,
+                subject_id=subject.id,
+                academic_class_id=student_class.id,
+                due_date=date(2026, 4, 1),
+            ),
+            Assignment(
+                title="Other Class Assignment",
+                description=None,
+                subject_id=subject.id,
+                academic_class_id=other_class.id,
+                due_date=date(2026, 4, 2),
+            ),
+        ]
+        self.db.add_all(assignments)
+        self.db.commit()
+        self._login()
+
+        response = self.client.get(f"/students/{student.id}/report")
+
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(
+            [assignment["id"] for assignment in response.json()["assignments"]],
+            [assignments[0].id],
+        )
+
+    def test_foreign_class_submission_does_not_include_assignment(self):
+        student_class = self._create_class()
+        other_class = self._create_class()
+        student = self._create_student(academic_class_id=student_class.id)
+        subject = self._create_subject()
+        assignment = Assignment(
+            title="Other Class Assignment",
+            description=None,
+            subject_id=subject.id,
+            academic_class_id=other_class.id,
+            due_date=date(2026, 4, 1),
+        )
+        self.db.add(assignment)
+        self.db.commit()
+        self.db.refresh(assignment)
+        self.db.add(
+            AssignmentSubmission(
+                assignment_id=assignment.id,
+                student_id=student.id,
+                submitted_at=datetime(2026, 3, 31, 10, 0),
+                status="submitted",
+            )
+        )
+        self.db.commit()
+        self._login()
+
+        response = self.client.get(f"/students/{student.id}/report")
+
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["assignments"], [])
+
+    def test_student_without_class_has_no_assignments_even_with_submission(self):
+        student = self._create_student()
+        other_class = self._create_class()
+        subject = self._create_subject()
+        assignment = Assignment(
+            title="Unrelated Assignment",
+            description=None,
+            subject_id=subject.id,
+            academic_class_id=other_class.id,
+            due_date=date(2026, 4, 1),
+        )
+        self.db.add(assignment)
+        self.db.commit()
+        self.db.refresh(assignment)
+        self.db.add(
+            AssignmentSubmission(
+                assignment_id=assignment.id,
+                student_id=student.id,
+                submitted_at=datetime(2026, 3, 31, 10, 0),
+                status="submitted",
+            )
+        )
+        self.db.commit()
+        self._login()
+
+        response = self.client.get(f"/students/{student.id}/report")
+
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["assignments"], [])
+
     def test_report_has_deterministic_ordering_and_isolation(self):
         academic_class = self._create_class()
         student_a = self._create_student(academic_class_id=academic_class.id)
