@@ -10,19 +10,26 @@ from app.models.models import (
     Attendance,
     Exam,
     Fee,
+    Mark,
     Student,
     Subject,
     Teacher,
 )
+from app.schemas.academic_class import ClassResponse
 from app.schemas.dashboard import (
     AdminDashboardResponse,
     AssignedClassItem,
     AssignedSubjectItem,
     RecentStudentItem,
+    StudentDashboardResponse,
+    StudentInfo,
+    StudentMarkItem,
     TeacherDashboardResponse,
     TeacherInfo,
     UpcomingExamItem,
 )
+from app.services.grades import calculate_grade
+from app.services.performance import get_student_performance
 
 
 def _safe_percentage(numerator: int, denominator: int) -> float:
@@ -300,4 +307,202 @@ def get_teacher_dashboard(db: Session, teacher: Teacher) -> TeacherDashboardResp
         overall_attendance_percentage=overall_attendance_percentage,
         assigned_classes=assigned_class_items,
         assigned_subjects=assigned_subject_items,
+    )
+
+
+def get_student_dashboard(db: Session, student: Student) -> StudentDashboardResponse:
+    """Build a database-driven dashboard for the given student.
+
+    Every query below is scoped to ``student.id`` (or, for class-wide data
+    such as exams and assignments, to the student's own
+    ``academic_class_id``). No statistic here is derived from another
+    student's records, which keeps this endpoint safe for student isolation.
+
+    Marks/performance figures are produced by calling the existing
+    ``get_student_performance`` service (and its underlying
+    ``calculate_grade`` helper) instead of re-implementing the grading
+    scale, per the project's existing grading convention.
+    """
+
+    # Reload the student with its academic class eagerly loaded.
+    student = db.scalars(
+        select(Student)
+        .where(Student.id == student.id)
+        .options(selectinload(Student.academic_class))
+    ).one()
+
+    academic_class_response = (
+        ClassResponse.model_validate(student.academic_class)
+        if student.academic_class
+        else None
+    )
+
+    # --- Marks / academic performance (reuses existing grading logic) ---
+    performance = get_student_performance(db, student.id)
+
+    recent_marks = db.scalars(
+        select(Mark)
+        .where(Mark.student_id == student.id)
+        .options(selectinload(Mark.subject))
+        .order_by(Mark.id.desc())
+        .limit(5)
+    ).all()
+    recent_mark_items = [
+        StudentMarkItem(
+            mark_id=mark.id,
+            exam_id=mark.exam_id,
+            subject_id=mark.subject_id,
+            subject_name=mark.subject.name,
+            marks=mark.marks,
+            grade=calculate_grade(mark.marks),
+        )
+        for mark in recent_marks
+    ]
+
+    # --- Attendance (this student only) ---
+    total_attendance_records = db.scalar(
+        select(func.count())
+        .select_from(Attendance)
+        .where(Attendance.student_id == student.id)
+    ) or 0
+    present_attendance_records = db.scalar(
+        select(func.count())
+        .select_from(Attendance)
+        .where(
+            Attendance.student_id == student.id,
+            Attendance.status == "present",
+        )
+    ) or 0
+    absent_attendance_records = total_attendance_records - present_attendance_records
+    attendance_percentage = _safe_percentage(
+        present_attendance_records,
+        total_attendance_records,
+    )
+
+    # --- Exams (student's academic class only) ---
+    total_exams = 0
+    past_exams_count = 0
+    upcoming_exam_items: list[UpcomingExamItem] = []
+    if student.academic_class_id is not None:
+        total_exams = db.scalar(
+            select(func.count())
+            .select_from(Exam)
+            .where(Exam.academic_class_id == student.academic_class_id)
+        ) or 0
+
+        upcoming_exams_count = db.scalar(
+            select(func.count())
+            .select_from(Exam)
+            .where(
+                Exam.academic_class_id == student.academic_class_id,
+                Exam.exam_date >= date.today(),
+            )
+        ) or 0
+        past_exams_count = total_exams - upcoming_exams_count
+
+        upcoming_exams = db.scalars(
+            select(Exam)
+            .options(selectinload(Exam.academic_class))
+            .where(
+                Exam.academic_class_id == student.academic_class_id,
+                Exam.exam_date >= date.today(),
+            )
+            .order_by(Exam.exam_date.asc(), Exam.id.asc())
+            .limit(5)
+        ).all()
+        upcoming_exam_items = [
+            UpcomingExamItem(
+                id=exam.id,
+                name=exam.name,
+                exam_date=exam.exam_date,
+                academic_class_name=(
+                    exam.academic_class.name if exam.academic_class else None
+                ),
+            )
+            for exam in upcoming_exams
+        ]
+
+    # --- Assignments (student's academic class; submissions scoped to this
+    # student only) ---
+    total_assignments = 0
+    submitted_assignments = 0
+    pending_assignments = 0
+    if student.academic_class_id is not None:
+        relevant_assignment_ids = select(Assignment.id).where(
+            Assignment.academic_class_id == student.academic_class_id
+        )
+
+        total_assignments = db.scalar(
+            select(func.count())
+            .select_from(Assignment)
+            .where(Assignment.academic_class_id == student.academic_class_id)
+        ) or 0
+
+        submitted_assignments = db.scalar(
+            select(func.count(func.distinct(AssignmentSubmission.assignment_id)))
+            .select_from(AssignmentSubmission)
+            .where(
+                AssignmentSubmission.student_id == student.id,
+                AssignmentSubmission.assignment_id.in_(relevant_assignment_ids),
+                AssignmentSubmission.status.in_(["submitted", "late"]),
+            )
+        ) or 0
+
+        pending_assignments = total_assignments - submitted_assignments
+
+    # --- Fees (this student only) ---
+    total_fee_records = db.scalar(
+        select(func.count()).select_from(Fee).where(Fee.student_id == student.id)
+    ) or 0
+    paid_fee_records = db.scalar(
+        select(func.count())
+        .select_from(Fee)
+        .where(Fee.student_id == student.id, Fee.paid_amount >= Fee.amount)
+    ) or 0
+    pending_fee_records = total_fee_records - paid_fee_records
+
+    total_fee_amount = float(
+        db.scalar(
+            select(func.coalesce(func.sum(Fee.amount), 0.0)).where(
+                Fee.student_id == student.id
+            )
+        )
+        or 0.0
+    )
+    paid_fee_amount = float(
+        db.scalar(
+            select(func.coalesce(func.sum(Fee.paid_amount), 0.0)).where(
+                Fee.student_id == student.id
+            )
+        )
+        or 0.0
+    )
+    due_fee_amount = round(total_fee_amount - paid_fee_amount, 2)
+
+    return StudentDashboardResponse(
+        student=StudentInfo.model_validate(student),
+        academic_class=academic_class_response,
+        total_results=performance.total_subjects,
+        total_possible_marks=performance.total_marks,
+        marks_obtained=performance.marks_obtained,
+        percentage=performance.percentage,
+        average_marks=performance.average_marks,
+        overall_grade=performance.grade,
+        recent_marks=recent_mark_items,
+        total_attendance_records=total_attendance_records,
+        present_attendance_records=present_attendance_records,
+        absent_attendance_records=absent_attendance_records,
+        attendance_percentage=attendance_percentage,
+        total_exams=total_exams,
+        upcoming_exams=upcoming_exam_items,
+        past_exams_count=past_exams_count,
+        total_assignments=total_assignments,
+        submitted_assignments=submitted_assignments,
+        pending_assignments=pending_assignments,
+        total_fee_records=total_fee_records,
+        paid_fee_records=paid_fee_records,
+        pending_fee_records=pending_fee_records,
+        total_fee_amount=round(total_fee_amount, 2),
+        paid_fee_amount=round(paid_fee_amount, 2),
+        due_fee_amount=due_fee_amount,
     )
