@@ -8,7 +8,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.database import Base, get_db
 from app.main import app
-from app.models.models import AcademicClass, Exam, Student, Subject, User
+from app.models.models import AcademicClass, Exam, Student, Subject, Teacher, User
 from app.security import hash_password
 
 
@@ -34,6 +34,16 @@ class MarkApiTests(unittest.TestCase):
         self.exam = self._create_exam()
         self.student = self._create_student()
         self.subject = self._create_subject()
+        self.teacher = Teacher(
+            user_id=self.teacher_user.id,
+            name="Teacher One",
+            email="teacher-profile@example.com",
+            phone="5557654321",
+        )
+        self.teacher.academic_classes.append(self.academic_class)
+        self.teacher.subjects.append(self.subject)
+        self.db.add(self.teacher)
+        self.db.commit()
 
     def tearDown(self):
         self.client.close()
@@ -98,6 +108,7 @@ class MarkApiTests(unittest.TestCase):
             "phone": "5551234567",
             "course": "Computer Science",
             "semester": 3,
+            "academic_class_id": self.academic_class.id,
         }
         payload.update(overrides)
         student = Student(**payload)

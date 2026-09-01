@@ -8,7 +8,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.database import Base, get_db
 from app.main import app
-from app.models.models import AcademicClass, Exam, Mark, Student, Subject, User
+from app.models.models import AcademicClass, Exam, Mark, Student, Subject, Teacher, User
 from app.security import hash_password
 from app.services.grades import calculate_grade
 
@@ -136,6 +136,7 @@ class GradesApiTests(unittest.TestCase):
             "phone": "5551234567",
             "course": "Computer Science",
             "semester": 3,
+            "academic_class_id": self.academic_class.id,
         }
         payload.update(overrides)
         student = Student(**payload)
@@ -210,6 +211,15 @@ class GradesApiTests(unittest.TestCase):
 
     def test_get_mark_grade_authenticated_non_admin(self):
         teacher_user = self._create_user("teacher@example.com", "teacher")
+        teacher = Teacher(
+            user_id=teacher_user.id,
+            name="Teacher One",
+            email="teacher-profile@example.com",
+            phone="5557654321",
+        )
+        teacher.academic_classes.append(self.academic_class)
+        self.db.add(teacher)
+        self.db.commit()
         mark = self._create_mark(marks=95.0)
         self._login(teacher_user.email)
 

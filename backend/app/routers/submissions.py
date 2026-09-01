@@ -10,6 +10,7 @@ from app.schemas.submission import (
     SubmissionCreate,
     SubmissionListResponse,
     SubmissionResponse,
+    SubmissionStatus,
     SubmissionUpdate,
 )
 from app.security import get_current_admin, get_current_user
@@ -49,7 +50,7 @@ def create_submission_endpoint(
 def list_submissions_endpoint(
     assignment_id: int,
     student_id: int | None = Query(default=None, ge=1),
-    status: str | None = Query(default=None),
+    status: SubmissionStatus | None = Query(default=None),
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
     db: Session = Depends(get_db),

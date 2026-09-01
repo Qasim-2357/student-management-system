@@ -212,7 +212,27 @@ class StudentApiTests(unittest.TestCase):
         self.assertEqual(response.status_code, 403, response.text)
 
     def test_authenticated_teacher_can_read_students(self):
-        self.assertEqual(self._create_student_as_admin().status_code, 201)
+        academic_class = AcademicClass(
+            name="CS Semester 3",
+            code="CS-3",
+            course="Computer Science",
+            semester=3,
+        )
+        self.db.add(academic_class)
+        self.db.commit()
+        teacher_profile = Teacher(
+            user_id=self.teacher.id,
+            name="Teacher One",
+            email="teacher-profile@example.com",
+            phone="5557654321",
+        )
+        teacher_profile.academic_classes.append(academic_class)
+        self.db.add(teacher_profile)
+        self.db.commit()
+        self.assertEqual(
+            self._create_student_as_admin(academic_class_id=academic_class.id).status_code,
+            201,
+        )
         self._login(self.teacher.email)
 
         response = self.client.get("/students")

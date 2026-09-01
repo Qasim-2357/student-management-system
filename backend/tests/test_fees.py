@@ -8,7 +8,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.database import Base, get_db
 from app.main import app
-from app.models.models import AcademicClass, Fee, Student, User
+from app.models.models import AcademicClass, Fee, Student, Teacher, User
 from app.security import hash_password
 
 
@@ -31,6 +31,15 @@ class FeeApiTests(unittest.TestCase):
         self.admin = self._create_user("admin@example.com", "admin")
         self.teacher = self._create_user("teacher@example.com", "teacher")
         self.academic_class = self._create_academic_class()
+        self.teacher_profile = Teacher(
+            user_id=self.teacher.id,
+            name="Teacher One",
+            email="teacher-profile@example.com",
+            phone="5557654321",
+        )
+        self.teacher_profile.academic_classes.append(self.academic_class)
+        self.db.add(self.teacher_profile)
+        self.db.commit()
         self.student = self._create_student()
         self.student_2 = self._create_student(
             name="Grace Hopper",

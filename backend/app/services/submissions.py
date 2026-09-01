@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from app.models.models import Assignment, AssignmentSubmission, Student
-from app.schemas.submission import SubmissionCreate, SubmissionUpdate
+from app.schemas.submission import SubmissionCreate, SubmissionStatus, SubmissionUpdate
 
 
 def get_submission_or_404(db: Session, submission_id: int) -> AssignmentSubmission:
@@ -135,7 +135,7 @@ def list_submissions(
     *,
     assignment_id: int,
     student_id: int | None,
-    status: str | None,
+    status: SubmissionStatus | None,
     page: int,
     page_size: int,
     student_ids: list[int] | None = None,

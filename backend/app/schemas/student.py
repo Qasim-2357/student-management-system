@@ -1,8 +1,17 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
 
 from app.schemas.academic_class import ClassResponse
+
+
+def _non_blank_string(value: str | None, field_name: str) -> str | None:
+    if value is None:
+        return None
+    cleaned = value.strip()
+    if not cleaned:
+        raise ValueError(f"{field_name} cannot be blank")
+    return cleaned
 
 
 class StudentCreate(BaseModel):
@@ -16,6 +25,24 @@ class StudentCreate(BaseModel):
     user_id: int | None = Field(default=None, ge=1)
     academic_class_id: int | None = Field(default=None, ge=1)
 
+    @field_validator("name", "roll_number", "course", "phone", mode="before")
+    @classmethod
+    def trim_text_fields(cls, value: str | None, info):
+        if value is None:
+            return value
+        return _non_blank_string(value, info.field_name)
+
+    @field_validator("email", mode="before")
+    @classmethod
+    def trim_email(cls, value):
+        if value is None:
+            return None
+        if isinstance(value, str):
+            value = value.strip()
+            if not value:
+                raise ValueError("email cannot be blank")
+        return value
+
 
 class StudentUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=1, max_length=100)
@@ -27,6 +54,24 @@ class StudentUpdate(BaseModel):
     semester: int | None = Field(default=None, ge=1)
     user_id: int | None = Field(default=None, ge=1)
     academic_class_id: int | None = Field(default=None, ge=1)
+
+    @field_validator("name", "roll_number", "course", "phone", mode="before")
+    @classmethod
+    def trim_text_fields(cls, value: str | None, info):
+        if value is None:
+            return value
+        return _non_blank_string(value, info.field_name)
+
+    @field_validator("email", mode="before")
+    @classmethod
+    def trim_email(cls, value):
+        if value is None:
+            return None
+        if isinstance(value, str):
+            value = value.strip()
+            if not value:
+                raise ValueError("email cannot be blank")
+        return value
 
 
 class StudentResponse(BaseModel):

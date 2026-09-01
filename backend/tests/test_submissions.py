@@ -8,7 +8,15 @@ from sqlalchemy.pool import StaticPool
 
 from app.database import Base, get_db
 from app.main import app
-from app.models.models import AcademicClass, Assignment, AssignmentSubmission, Student, Subject, User
+from app.models.models import (
+    AcademicClass,
+    Assignment,
+    AssignmentSubmission,
+    Student,
+    Subject,
+    Teacher,
+    User,
+)
 from app.security import hash_password
 
 
@@ -30,8 +38,22 @@ class SubmissionApiTests(unittest.TestCase):
         self.client = TestClient(app)
         self.admin = self._create_user("admin@example.com", "admin")
         self.teacher = self._create_user("teacher@example.com", "teacher")
+        self.teacher_profile = Teacher(
+            user_id=self.teacher.id,
+            name="Teacher One",
+            email="teacher-profile@example.com",
+            phone="5557654321",
+        )
+        self.db.add(self.teacher_profile)
+        self.db.commit()
+        self.db.refresh(self.teacher_profile)
+
         self.academic_class = self._create_academic_class()
         self.subject = self._create_subject(name="Mathematics", code="MATH-101")
+        self.teacher_profile.academic_classes.append(self.academic_class)
+        self.teacher_profile.subjects.append(self.subject)
+        self.db.commit()
+
         self.student_1 = self._create_student(name="Ada Lovelace", roll_number="ROLL-001")
         self.student_2 = self._create_student(name="Grace Hopper", roll_number="ROLL-002")
         self.assignment = self._create_assignment(
@@ -210,6 +232,13 @@ class SubmissionApiTests(unittest.TestCase):
     def test_submission_unauthenticated(self):
         response = self.client.get(f"/assignments/{self.assignment.id}/submissions")
         self.assertEqual(response.status_code, 401, response.text)
+
+    def test_invalid_submission_status_is_rejected(self):
+        self._login(self.admin.email)
+        response = self.client.get(
+            f"/assignments/{self.assignment.id}/submissions?status=invalid-status"
+        )
+        self.assertEqual(response.status_code, 422, response.text)
 
     def test_non_admin_cannot_create_submission(self):
         self._login(self.teacher.email)

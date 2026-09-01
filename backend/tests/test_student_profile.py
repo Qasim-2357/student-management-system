@@ -8,7 +8,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.database import Base, get_db
 from app.main import app
-from app.models.models import AcademicClass, Exam, Mark, Subject, User
+from app.models.models import AcademicClass, Exam, Mark, Subject, Teacher, User
 from app.security import hash_password
 
 
@@ -140,7 +140,17 @@ class StudentProfileApiTests(unittest.TestCase):
         self.assertEqual(response.status_code, 404, response.text)
 
     def test_authenticated_access(self):
-        student = self._create_student_as_admin()
+        academic_class = self._create_academic_class()
+        teacher = Teacher(
+            user_id=self.teacher.id,
+            name="Teacher One",
+            email="teacher-profile@example.com",
+            phone="5557654321",
+        )
+        teacher.academic_classes.append(academic_class)
+        self.db.add(teacher)
+        self.db.commit()
+        student = self._create_student_as_admin(academic_class_id=academic_class.id)
         self._login(self.teacher.email)
 
         response = self.client.get(f"/students/{student['id']}/profile")

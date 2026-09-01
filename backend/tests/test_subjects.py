@@ -110,6 +110,11 @@ class SubjectApiTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 422, response.text)
 
+    def test_create_rejects_whitespace_only_name(self):
+        response = self._create_subject_as_admin(name="   ")
+
+        self.assertEqual(response.status_code, 422, response.text)
+
     def test_create_rejects_blank_code(self):
         response = self._create_subject_as_admin(code="")
 

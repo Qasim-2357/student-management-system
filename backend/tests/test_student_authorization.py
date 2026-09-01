@@ -241,6 +241,19 @@ class StudentAuthorizationApiTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200, response.text)
 
+    def test_teacher_without_teacher_profile_is_not_granted_unscoped_access(self):
+        teacher_user = self._user("teacher")
+        self._login(teacher_user)
+
+        for path in (
+            f"/students/{self.student_b.id}",
+            f"/students/{self.student_b.id}/profile",
+            f"/grades/{self.mark_b.id}",
+            f"/fees/{self.fee_b.id}",
+        ):
+            with self.subTest(path=path):
+                self.assertEqual(self.client.get(path).status_code, 403)
+
     def test_unauthenticated_requests_remain_rejected(self):
         response = self.client.get(f"/students/{self.student_b.id}/profile")
         self.assertEqual(response.status_code, 401)

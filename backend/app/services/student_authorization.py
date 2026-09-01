@@ -28,11 +28,8 @@ def authorized_student_ids(db: Session, current_user: User) -> list[int] | None:
         teacher_exists = db.scalar(
             select(Teacher.id).where(Teacher.user_id == current_user.id)
         )
-        # Preserve the pre-authorization read contract for role-only teacher
-        # accounts used by existing integrations. Profiles with assignments
-        # are scoped to their actual classes.
         if teacher_exists is None:
-            return None
+            return []
         return list(
             db.scalars(
                 select(Student.id)
@@ -69,7 +66,7 @@ def authorize_student_access(
         allowed = student.user_id == current_user.id
     elif current_user.role == "teacher":
         scoped_ids = authorized_student_ids(db, current_user)
-        allowed = scoped_ids is None or student_id in scoped_ids
+        allowed = bool(scoped_ids) and student_id in scoped_ids
     else:
         allowed = False
     if not allowed:
@@ -112,7 +109,7 @@ def authorize_assignment_access(
         teacher_exists = db.scalar(
             select(Teacher.id).where(Teacher.user_id == current_user.id)
         )
-        allowed = teacher_exists is None or (
+        allowed = teacher_exists is not None and (
             db.scalar(
                 select(Assignment.id)
                 .join(
