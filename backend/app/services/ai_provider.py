@@ -6,6 +6,15 @@ attendance, or authorization - it accepts a prompt string and returns the
 raw text response from the provider. Everything domain-specific lives in
 ``app.services.ai_analysis``.
 
+Provider: OpenRouter (https://openrouter.ai). OpenRouter exposes an
+OpenAI-compatible ``/chat/completions`` endpoint in front of many models,
+including a free tier, so this integration requires no paid SDK and no new
+third-party dependency (plain ``urllib`` is enough). The default model is
+``openrouter/free``, OpenRouter's own auto-router, which picks a
+currently-available free model on each request - this avoids hardcoding a
+specific free model id, since the free lineup on OpenRouter rotates
+frequently.
+
 Credentials are read from environment variables at call time (never
 hardcoded, never imported eagerly at module load), so the application can
 start normally even when the AI feature is not configured - it only fails
@@ -28,11 +37,10 @@ class AIProviderNotConfiguredError(AIProviderError):
     """Raised when required AI provider credentials are missing."""
 
 
-DEFAULT_BASE_URL = "https://api.anthropic.com/v1/messages"
-DEFAULT_MODEL = "claude-sonnet-4-6"
+DEFAULT_BASE_URL = "https://openrouter.ai/api/v1/chat/completions"
+DEFAULT_MODEL = "openrouter/free"
 DEFAULT_TIMEOUT_SECONDS = 20
 DEFAULT_MAX_TOKENS = 1024
-DEFAULT_API_VERSION = "2023-06-01"
 
 
 def _get_api_key() -> str:
@@ -61,8 +69,8 @@ def _get_timeout_seconds() -> float:
 
 
 def call_ai_provider(prompt: str) -> str:
-    """Send ``prompt`` to the configured AI provider and return the raw
-    text of its response.
+    """Send ``prompt`` to the configured AI provider (OpenRouter) and
+    return the raw text of its response.
 
     Raises ``AIProviderError`` (or a subclass) on any failure - missing
     configuration, network issues, non-2xx responses, or a response that
@@ -88,8 +96,7 @@ def call_ai_provider(prompt: str) -> str:
         method="POST",
         headers={
             "Content-Type": "application/json",
-            "x-api-key": api_key,
-            "anthropic-version": DEFAULT_API_VERSION,
+            "Authorization": f"Bearer {api_key}",
         },
     )
 
@@ -107,12 +114,9 @@ def call_ai_provider(prompt: str) -> str:
 
     try:
         body = json.loads(raw_body)
-        content_blocks = body["content"]
-        text_parts = [
-            block["text"] for block in content_blocks if block.get("type") == "text"
-        ]
-        text = "".join(text_parts).strip()
-    except (KeyError, TypeError, ValueError) as exc:
+        text = body["choices"][0]["message"]["content"]
+        text = text.strip() if isinstance(text, str) else ""
+    except (KeyError, IndexError, TypeError, ValueError) as exc:
         raise AIProviderError("AI provider returned an unexpected response shape") from exc
 
     if not text:
