@@ -1,87 +1,140 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ApiError } from '@/lib/api/client';
+import { useAuth, useLoginMutation } from '@/lib/hooks/use-auth';
 
-const VALID_CREDENTIALS = {
-  email: 'admin@example.com',
-  password: 'password123',
-};
+const loginSchema = z.object({
+  email: z.string().min(1, 'Email is required').email('Enter a valid email address'),
+  password: z.string().min(1, 'Password is required'),
+});
 
-export default function LoginPage() {
+type LoginFormValues = z.infer<typeof loginSchema>;
+
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const redirectTo = searchParams.get('redirect') || '/dashboard';
+  const { isAuthenticated } = useAuth();
+  const loginMutation = useLoginMutation();
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: '', password: '' },
+  });
 
-    if (email !== VALID_CREDENTIALS.email || password !== VALID_CREDENTIALS.password) {
-      setError('Invalid email or password.');
-      return;
+  // Already have a valid session (e.g. back-navigated here) - skip the form.
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace(redirectTo);
     }
 
-    const nextUrl = searchParams.get('redirect') || '/dashboard';
-    localStorage.setItem(
-      'session',
-      JSON.stringify({ user: { email, role: 'admin' } }),
-    );
-    router.push(nextUrl);
-  };
+  }, [isAuthenticated, redirectTo, router]);
+
+  const onSubmit = handleSubmit(async (values) => {
+    try {
+      await loginMutation.mutateAsync(values);
+      router.push(redirectTo);
+    } catch {
+      // Surfaced below via loginMutation.error - nothing else to do here.
+    }
+  });
+
+  const errorMessage =
+    loginMutation.error instanceof ApiError
+      ? loginMutation.error.kind === 'unauthorized'
+        ? 'Invalid email or password.'
+        : loginMutation.error.message
+      : loginMutation.error
+        ? 'Something went wrong. Please try again.'
+        : null;
+
+  const busy = isSubmitting || loginMutation.isPending;
 
   return (
-    <main className="min-h-screen bg-slate-100 p-6">
-      <div className="mx-auto max-w-md rounded-lg border border-slate-200 bg-white p-8 shadow-sm">
-        <h1 className="mb-6 text-2xl font-semibold text-slate-900">Sign in</h1>
+    <main className="flex min-h-dvh items-center justify-center bg-muted/40 p-4 sm:p-6">
+      <div className="w-full max-w-sm rounded-lg border border-border bg-card p-6 shadow-sm sm:max-w-md sm:p-8">
+        <h1 className="mb-1 text-2xl font-semibold text-foreground">Sign in</h1>
+        <p className="mb-6 text-sm text-muted-foreground">Student Management System</p>
+
         {searchParams.get('redirect') ? (
-          <p className="mb-4 text-sm text-slate-600">Please sign in to continue.</p>
+          <p className="mb-4 text-sm text-muted-foreground">Please sign in to continue.</p>
         ) : null}
-        {error ? (
-          <div className="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-            {error}
-          </div>
+
+        {errorMessage ? (
+          <Alert role="alert" aria-live="assertive" variant="destructive" className="mb-4">
+            <AlertDescription>{errorMessage}</AlertDescription>
+          </Alert>
         ) : null}
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="email" className="mb-1 block text-sm font-medium text-slate-700">
-              Email
-            </label>
-            <input
+
+        <form className="space-y-4" onSubmit={onSubmit} noValidate>
+          <div className="space-y-1.5">
+            <Label htmlFor="email">Email</Label>
+            <Input
               id="email"
-              name="email"
               type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              className="w-full rounded border border-slate-300 px-3 py-2 outline-none ring-0 focus:border-slate-500"
               autoComplete="email"
-              required
+              disabled={busy}
+              aria-invalid={Boolean(errors.email)}
+              aria-describedby={errors.email ? 'email-error' : undefined}
+              {...register('email')}
             />
+            {errors.email ? (
+              <p id="email-error" className="text-sm text-destructive">
+                {errors.email.message}
+              </p>
+            ) : null}
           </div>
-          <div>
-            <label htmlFor="password" className="mb-1 block text-sm font-medium text-slate-700">
-              Password
-            </label>
-            <input
+
+          <div className="space-y-1.5">
+            <Label htmlFor="password">Password</Label>
+            <Input
               id="password"
-              name="password"
               type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              className="w-full rounded border border-slate-300 px-3 py-2 outline-none ring-0 focus:border-slate-500"
               autoComplete="current-password"
-              required
+              disabled={busy}
+              aria-invalid={Boolean(errors.password)}
+              aria-describedby={errors.password ? 'password-error' : undefined}
+              {...register('password')}
             />
+            {errors.password ? (
+              <p id="password-error" className="text-sm text-destructive">
+                {errors.password.message}
+              </p>
+            ) : null}
           </div>
-          <button
-            type="submit"
-            className="w-full rounded bg-slate-900 px-4 py-2 font-medium text-white transition hover:bg-slate-700"
-          >
-            Sign in
-          </button>
+
+          <Button type="submit" className="w-full" disabled={busy}>
+            {busy ? 'Signing in…' : 'Sign in'}
+          </Button>
         </form>
       </div>
     </main>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-dvh items-center justify-center bg-muted/40 p-4">
+          <p className="text-sm text-muted-foreground">Loading sign-in…</p>
+        </main>
+      }
+    >
+      <LoginForm />
+    </Suspense>
   );
 }
