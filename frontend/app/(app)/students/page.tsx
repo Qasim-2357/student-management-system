@@ -66,7 +66,8 @@ export default function StudentsPage() {
         <CardContent>
           {students.isLoading ? <LoadingState rows={5} label="Loading students" /> : null}
           {students.isError ? <ErrorState message={error} onRetry={() => students.refetch()} /> : null}
-          {students.isSuccess && students.data.items.length === 0 ? <EmptyState title="No students found" description="Try adjusting your search or filters." /> : null}
+          {deleteMutation.isError ? <ErrorState title="Student could not be deleted" message={deleteMutation.error instanceof ApiError ? deleteMutation.error.message : 'Please try again.'} /> : null}
+          {students.isSuccess && students.data.items.length === 0 ? <EmptyState title={params.search || params.course || params.semester ? 'No matching students' : 'No students yet'} description={params.search || params.course || params.semester ? 'Try adjusting your search or filters.' : 'Student records will appear here when they are added.'} action={params.search || params.course || params.semester ? <Button variant="outline" size="sm" onClick={() => updateUrl({ search: undefined, course: undefined, semester: undefined, page: undefined })}>Clear filters</Button> : <RoleGate roles={['admin']}><Link className={buttonVariants({ size: 'sm' })} href="/students/new">Add student</Link></RoleGate>} /> : null}
           {students.isSuccess && students.data.items.length > 0 ? (
             <>
               <div className="overflow-x-auto">

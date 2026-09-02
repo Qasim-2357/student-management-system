@@ -9,9 +9,10 @@ import { useAuth, useLogoutMutation } from '@/lib/hooks/use-auth';
 
 export interface AppHeaderProps {
   onMenuClick: () => void;
+  isMenuOpen: boolean;
 }
 
-export function AppHeader({ onMenuClick }: AppHeaderProps) {
+export function AppHeader({ onMenuClick, isMenuOpen }: AppHeaderProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -34,6 +35,7 @@ export function AppHeader({ onMenuClick }: AppHeaderProps) {
           className="lg:hidden"
           aria-label="Open navigation menu"
           aria-haspopup="true"
+          aria-expanded={isMenuOpen}
           onClick={onMenuClick}
         >
           <Menu className="size-5" aria-hidden="true" />

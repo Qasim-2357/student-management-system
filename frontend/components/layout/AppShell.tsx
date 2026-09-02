@@ -37,7 +37,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             className="absolute inset-0 bg-black/40"
             onClick={() => setMobileNavOpen(false)}
           />
-          <div role="dialog" aria-modal="true" aria-label="Navigation menu" className="relative z-10 h-full w-72 max-w-[85vw] bg-background shadow-lg">
+          <div role="dialog" aria-modal="true" aria-label="Navigation menu" className="relative z-10 h-full w-72 max-w-[85vw] animate-[slide-in_180ms_ease-out] bg-background shadow-lg motion-reduce:animate-none">
             <div className="flex items-center justify-end p-2">
               <button
                 ref={closeButtonRef}
@@ -55,7 +55,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       ) : null}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <AppHeader onMenuClick={() => setMobileNavOpen(true)} />
+        <AppHeader onMenuClick={() => setMobileNavOpen(true)} isMenuOpen={mobileNavOpen} />
         <main className="flex-1 overflow-y-auto p-4 sm:p-6">{children}</main>
       </div>
     </div>

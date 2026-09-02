@@ -6,14 +6,7 @@ import {
   LayoutDashboard,
   Users,
   GraduationCap,
-  BookOpen,
   Layers,
-  ClipboardList,
-  FileText,
-  CalendarCheck,
-  Award,
-  Wallet,
-  UserCircle,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/lib/hooks/use-auth';
@@ -26,20 +19,11 @@ interface NavItem {
   roles: UserRole[];
 }
 
-// Pages behind these routes don't exist yet - later days fill them in.
-// The nav is built now so the shell/IA is settled before content lands.
 const NAV_ITEMS: NavItem[] = [
   { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, roles: ['admin', 'teacher', 'student'] },
   { label: 'Students', href: '/students', icon: Users, roles: ['admin', 'teacher'] },
   { label: 'Teachers', href: '/teachers', icon: GraduationCap, roles: ['admin'] },
   { label: 'Classes', href: '/classes', icon: Layers, roles: ['admin', 'teacher'] },
-  { label: 'Subjects', href: '/subjects', icon: BookOpen, roles: ['admin', 'teacher'] },
-  { label: 'Exams', href: '/exams', icon: ClipboardList, roles: ['admin', 'teacher', 'student'] },
-  { label: 'Assignments', href: '/assignments', icon: FileText, roles: ['admin', 'teacher', 'student'] },
-  { label: 'Attendance', href: '/attendance', icon: CalendarCheck, roles: ['admin', 'teacher', 'student'] },
-  { label: 'Marks', href: '/marks', icon: Award, roles: ['admin', 'teacher', 'student'] },
-  { label: 'Fees', href: '/fees', icon: Wallet, roles: ['admin', 'teacher', 'student'] },
-  { label: 'Profile', href: '/profile', icon: UserCircle, roles: ['admin', 'teacher', 'student'] },
 ];
 
 export interface AppSidebarProps {
