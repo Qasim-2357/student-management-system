@@ -1,185 +1,182 @@
+from typing import Any, List, Optional, Sequence, Tuple, Union
 from fastapi import HTTPException, status
-from sqlalchemy import func, or_, select
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 
-from app.models.models import Exam, Mark, Student, Subject
+from app.models.models import Mark, Student, Subject, Exam
 from app.schemas.mark import MarkCreate, MarkUpdate
 
 
-def get_mark_or_404(db: Session, mark_id: int) -> Mark:
-    mark = db.get(Mark, mark_id)
-    if mark is None:
+def get_mark(db: Session, mark_id: int) -> Mark:
+    mark = db.query(Mark).filter(Mark.id == mark_id).first()
+    if not mark:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Mark with id {mark_id} was not found",
+            detail=f"Mark record {mark_id} not found"
         )
     return mark
 
 
-def _ensure_exam_exists(db: Session, exam_id: int) -> None:
-    if db.get(Exam, exam_id) is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Exam with id {exam_id} was not found",
-        )
+get_mark_or_404 = get_mark
 
 
-def _ensure_student_exists(db: Session, student_id: int) -> None:
-    if db.get(Student, student_id) is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Student with id {student_id} was not found",
-        )
-
-
-def _ensure_subject_exists(db: Session, subject_id: int) -> None:
-    if db.get(Subject, subject_id) is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Subject with id {subject_id} was not found",
-        )
-
-
-def _ensure_combination_available(
+def list_marks(
     db: Session,
-    exam_id: int,
-    student_id: int,
-    subject_id: int,
-    mark_id: int | None = None,
-) -> None:
-    statement = select(Mark.id).where(
-        Mark.exam_id == exam_id,
-        Mark.student_id == student_id,
-        Mark.subject_id == subject_id,
-    )
-    if mark_id is not None:
-        statement = statement.where(Mark.id != mark_id)
-    if db.scalar(statement) is not None:
+    skip: Optional[int] = None,
+    limit: Optional[int] = None,
+    page: Optional[int] = None,
+    page_size: Optional[int] = None,
+    student_id: Optional[int] = None,
+    student_ids: Optional[Sequence[int]] = None,
+    subject_id: Optional[int] = None,
+    exam_id: Optional[int] = None,
+    search: Optional[str] = None,
+    **kwargs: Any,
+) -> Tuple[List[Mark], int]:
+    query = db.query(Mark)
+
+    if student_id is not None:
+        query = query.filter(Mark.student_id == student_id)
+    elif student_ids is not None:
+        query = query.filter(Mark.student_id.in_(student_ids))
+
+    if subject_id is not None:
+        query = query.filter(Mark.subject_id == subject_id)
+
+    if exam_id is not None:
+        query = query.filter(Mark.exam_id == exam_id)
+
+    if search:
+        search_term = f"%{search}%"
+        query = query.join(Mark.student).join(Mark.subject)
+        query = query.filter(
+            or_(
+                Student.name.ilike(search_term),
+                Subject.code.ilike(search_term),
+                Subject.name.ilike(search_term),
+            )
+        )
+
+    query = query.order_by(Mark.id.asc())
+    total = query.count()
+
+    if page is not None and page_size is not None:
+        calculated_skip = max(0, (page - 1) * page_size)
+        items = query.offset(calculated_skip).limit(page_size).all()
+    else:
+        offset_val = skip if skip is not None else 0
+        limit_val = limit if limit is not None else 100
+        items = query.offset(offset_val).limit(limit_val).all()
+
+    return items, total
+
+
+def create_mark(db: Session, data: MarkCreate) -> Mark:
+    marks_val = getattr(data, "marks", getattr(data, "marks_obtained", None))
+    if marks_val is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Marks value is required"
+        )
+    if marks_val < 0 or marks_val > 100:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Marks must be between 0 and 100"
+        )
+
+    if not db.query(Student).filter(Student.id == data.student_id).first():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Student {data.student_id} not found"
+        )
+    if not db.query(Subject).filter(Subject.id == data.subject_id).first():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Subject {data.subject_id} not found"
+        )
+    if not db.query(Exam).filter(Exam.id == data.exam_id).first():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Exam {data.exam_id} not found"
+        )
+
+    existing = db.query(Mark).filter(
+        Mark.student_id == data.student_id,
+        Mark.subject_id == data.subject_id,
+        Mark.exam_id == data.exam_id
+    ).first()
+    if existing:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="A mark for this exam, student, and subject already exists",
+            detail="Mark record already exists for this student, subject, and exam"
         )
 
-
-def create_mark(db: Session, mark_data: MarkCreate) -> Mark:
-    _ensure_exam_exists(db, mark_data.exam_id)
-    _ensure_student_exists(db, mark_data.student_id)
-    _ensure_subject_exists(db, mark_data.subject_id)
-    _ensure_combination_available(
-        db,
-        mark_data.exam_id,
-        mark_data.student_id,
-        mark_data.subject_id,
+    mark = Mark(
+        student_id=data.student_id,
+        subject_id=data.subject_id,
+        exam_id=data.exam_id,
+        marks=marks_val,
     )
-    mark = Mark(**mark_data.model_dump())
     db.add(mark)
-    _commit_or_raise_conflict(db)
+    db.commit()
     db.refresh(mark)
     return mark
 
 
 def update_mark(
     db: Session,
-    mark: Mark,
-    mark_data: MarkUpdate,
+    mark_or_id: Union[Mark, int],
+    data: MarkUpdate,
 ) -> Mark:
-    changes = mark_data.model_dump(exclude_unset=True)
+    mark = mark_or_id if isinstance(mark_or_id, Mark) else get_mark(db, mark_or_id)
+    update_data = data.model_dump(exclude_unset=True)
 
-    if "exam_id" in changes:
-        _ensure_exam_exists(db, changes["exam_id"])
-    if "student_id" in changes:
-        _ensure_student_exists(db, changes["student_id"])
-    if "subject_id" in changes:
-        _ensure_subject_exists(db, changes["subject_id"])
+    marks_val = update_data.get("marks", update_data.get("marks_obtained"))
+    if marks_val is not None:
+        if marks_val < 0 or marks_val > 100:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Marks must be between 0 and 100"
+            )
+        mark.marks = marks_val
 
-    if any(field in changes for field in ("exam_id", "student_id", "subject_id")):
-        _ensure_combination_available(
-            db,
-            changes.get("exam_id", mark.exam_id),
-            changes.get("student_id", mark.student_id),
-            changes.get("subject_id", mark.subject_id),
-            mark.id,
-        )
+    new_student = update_data.get("student_id", mark.student_id)
+    new_subject = update_data.get("subject_id", mark.subject_id)
+    new_exam = update_data.get("exam_id", mark.exam_id)
 
-    for field, value in changes.items():
-        setattr(mark, field, value)
+    if new_student != mark.student_id and not db.query(Student).filter(Student.id == new_student).first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Student {new_student} not found")
+    if new_subject != mark.subject_id and not db.query(Subject).filter(Subject.id == new_subject).first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Subject {new_subject} not found")
+    if new_exam != mark.exam_id and not db.query(Exam).filter(Exam.id == new_exam).first():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Exam {new_exam} not found")
 
-    _commit_or_raise_conflict(db)
+    if new_student != mark.student_id or new_subject != mark.subject_id or new_exam != mark.exam_id:
+        existing = db.query(Mark).filter(
+            Mark.student_id == new_student,
+            Mark.subject_id == new_subject,
+            Mark.exam_id == new_exam,
+            Mark.id != mark.id,
+        ).first()
+        if existing:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Mark record already exists for this student, subject, and exam"
+            )
+
+    for field in ("student_id", "subject_id", "exam_id"):
+        if field in update_data and update_data[field] is not None:
+            setattr(mark, field, update_data[field])
+
+    db.commit()
     db.refresh(mark)
     return mark
 
 
-def delete_mark(db: Session, mark: Mark) -> None:
-    db.delete(mark)
-    try:
-        db.commit()
-    except IntegrityError:
-        db.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Mark cannot be deleted while related records exist",
-        ) from None
-
-
-def list_marks(
+def delete_mark(
     db: Session,
-    *,
-    search: str | None,
-    exam_id: int | None,
-    student_id: int | None,
-    subject_id: int | None,
-    page: int,
-    page_size: int,
-    student_ids: list[int] | None = None,
-) -> tuple[list[Mark], int]:
-    filters = []
-    if student_ids is not None:
-        filters.append(Mark.student_id.in_(student_ids))
-    if exam_id is not None:
-        filters.append(Mark.exam_id == exam_id)
-    if student_id is not None:
-        filters.append(Mark.student_id == student_id)
-    if subject_id is not None:
-        filters.append(Mark.subject_id == subject_id)
-
-    base_query = select(Mark)
-    count_query = select(func.count()).select_from(Mark)
-
-    if search:
-        pattern = f"%{search.strip()}%"
-        base_query = base_query.join(Student, Mark.student_id == Student.id).join(
-            Subject, Mark.subject_id == Subject.id
-        )
-        count_query = count_query.join(Student, Mark.student_id == Student.id).join(
-            Subject, Mark.subject_id == Subject.id
-        )
-        filters.append(
-            or_(
-                Student.name.ilike(pattern),
-                Student.roll_number.ilike(pattern),
-                Subject.name.ilike(pattern),
-                Subject.code.ilike(pattern),
-            )
-        )
-
-    total = db.scalar(count_query.where(*filters)) or 0
-    marks = db.scalars(
-        base_query
-        .where(*filters)
-        .order_by(Mark.id.asc())
-        .offset((page - 1) * page_size)
-        .limit(page_size)
-    ).all()
-    return marks, total
-
-
-def _commit_or_raise_conflict(db: Session) -> None:
-    try:
-        db.commit()
-    except IntegrityError:
-        db.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Mark data conflicts with an existing record",
-        ) from None
+    mark_or_id: Union[Mark, int],
+) -> None:
+    mark = mark_or_id if isinstance(mark_or_id, Mark) else get_mark(db, mark_or_id)
+    db.delete(mark)
+    db.commit()

@@ -1,140 +1,212 @@
-'use client';
+"use client";
 
-import { Suspense, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ApiError } from '@/lib/api/client';
-import { useAuth, useLoginMutation } from '@/lib/hooks/use-auth';
+import { useState } from "react";
+import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { BrandMark } from "@/components/site/BrandMark";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useLogin } from "@/lib/hooks/use-auth";
+import { PublicHeader } from "@/components/layout/PublicHeader";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 
 const loginSchema = z.object({
-  email: z.string().min(1, 'Email is required').email('Enter a valid email address'),
-  password: z.string().min(1, 'Password is required'),
+  username: z.string().min(1, "Identifier is required"),
+  password: z.string().min(1, "Password is required"),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-function LoginForm() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirectTo = searchParams.get('redirect') || '/dashboard';
-  const { isAuthenticated } = useAuth();
-  const loginMutation = useLoginMutation();
+type DemoRole = "ADMIN" | "TEACHER" | "STUDENT";
+
+const DEMO_CREDENTIALS: Record<DemoRole, { username: string; label: string; desc: string }> = {
+  ADMIN: {
+    username: "admin@example.com",
+    label: "Administrator",
+    desc: "Institutional Governance & Master Registry",
+  },
+  TEACHER: {
+    username: "teacher",
+    label: "Faculty Desk",
+    desc: "Attendance Rosters, Syllabus & Mark Entry",
+  },
+  STUDENT: {
+    username: "student",
+    label: "Student Desk",
+    desc: "Enrollment Record, Marks & Circulars",
+  },
+};
+
+export default function LoginPage() {
+  const loginMutation = useLogin();
+  const [error, setError] = useState<string | null>(null);
+  const [selectedRole, setSelectedRole] = useState<DemoRole>("ADMIN");
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    setValue,
+    formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: '', password: '' },
+    defaultValues: {
+      username: DEMO_CREDENTIALS.ADMIN.username,
+      password: "",
+    },
   });
 
-  // Already have a valid session (e.g. back-navigated here) - skip the form.
-  useEffect(() => {
-    if (isAuthenticated) {
-      router.replace(redirectTo);
-    }
+  const handleRoleSelect = (role: DemoRole) => {
+    setSelectedRole(role);
+    setValue("username", DEMO_CREDENTIALS[role].username);
+    setValue("password", "");
+    setError(null);
+  };
 
-  }, [isAuthenticated, redirectTo, router]);
-
-  const onSubmit = handleSubmit(async (values) => {
-    try {
-      await loginMutation.mutateAsync(values);
-      router.push(redirectTo);
-    } catch {
-      // Surfaced below via loginMutation.error - nothing else to do here.
-    }
-  });
-
-  const errorMessage =
-    loginMutation.error instanceof ApiError
-      ? loginMutation.error.kind === 'unauthorized'
-        ? 'Invalid email or password.'
-        : loginMutation.error.message
-      : loginMutation.error
-        ? 'Something went wrong. Please try again.'
-        : null;
-
-  const busy = isSubmitting || loginMutation.isPending;
-
-  return (
-    <main className="flex min-h-dvh items-center justify-center bg-muted/40 p-4 sm:p-6">
-      <div className="w-full max-w-sm rounded-lg border border-border bg-card p-6 shadow-sm sm:max-w-md sm:p-8">
-        <h1 className="mb-1 text-2xl font-semibold text-foreground">Sign in</h1>
-        <p className="mb-6 text-sm text-muted-foreground">Student Management System</p>
-
-        {searchParams.get('redirect') ? (
-          <p className="mb-4 text-sm text-muted-foreground">Please sign in to continue.</p>
-        ) : null}
-
-        {errorMessage ? (
-          <Alert role="alert" aria-live="assertive" variant="destructive" className="mb-4">
-            <AlertDescription>{errorMessage}</AlertDescription>
-          </Alert>
-        ) : null}
-
-        <form className="space-y-4" onSubmit={onSubmit} noValidate>
-          <div className="space-y-1.5">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              autoComplete="email"
-              disabled={busy}
-              aria-invalid={Boolean(errors.email)}
-              aria-describedby={errors.email ? 'email-error' : undefined}
-              {...register('email')}
-            />
-            {errors.email ? (
-              <p id="email-error" className="text-sm text-destructive">
-                {errors.email.message}
-              </p>
-            ) : null}
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              autoComplete="current-password"
-              disabled={busy}
-              aria-invalid={Boolean(errors.password)}
-              aria-describedby={errors.password ? 'password-error' : undefined}
-              {...register('password')}
-            />
-            {errors.password ? (
-              <p id="password-error" className="text-sm text-destructive">
-                {errors.password.message}
-              </p>
-            ) : null}
-          </div>
-
-          <Button type="submit" className="w-full" disabled={busy}>
-            {busy ? 'Signing in…' : 'Sign in'}
-          </Button>
-        </form>
-      </div>
-    </main>
-  );
-}
-
-export default function LoginPage() {
-  return (
-    <Suspense
-      fallback={
-        <main className="flex min-h-dvh items-center justify-center bg-muted/40 p-4">
-          <p className="text-sm text-muted-foreground">Loading sign-in…</p>
-        </main>
+  const onSubmit = (data: LoginFormValues) => {
+    setError(null);
+    loginMutation.mutate(
+      {
+        email: data.username,
+        password: data.password,
+      },
+      {
+        onError: (err: Error) => {
+          setError(err.message || "Invalid credentials. Please verify username and password.");
+        },
       }
-    >
-      <LoginForm />
-    </Suspense>
+    );
+  };
+
+  return (
+    <div className="flex min-h-screen flex-col bg-[#FFF8E7] text-[#3B2921]">
+      <PublicHeader />
+
+      <main className="flex flex-1 items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md space-y-6">
+          <div className="text-center">
+            <Link href="/" className="inline-flex justify-center">
+              <BrandMark size="lg" />
+            </Link>
+            <h1 className="mt-3 font-serif text-xl font-bold tracking-tight text-[#3B2921]">
+              Institutional Portal Login
+            </h1>
+            <p className="text-xs text-[#6B5A4A]">
+              Central authentication gateway for students, faculty, and administrative staff.
+            </p>
+          </div>
+
+          <Card
+            className="border-[#E8D8BD] bg-[#FFFDF5] text-[#3B2921] shadow-xs"
+            style={{ borderRadius: "4px" }}
+          >
+            <CardHeader className="border-b border-[#E8D8BD] pb-4">
+              <CardTitle className="font-serif text-base font-bold text-[#3B2921]">
+                Sign In to Academic Account
+              </CardTitle>
+              <CardDescription className="text-xs text-[#6B5A4A]">
+                Select your designated role to load corresponding account identifier.
+              </CardDescription>
+
+              <div className="mt-3 grid grid-cols-3 gap-1 border border-[#E8D8BD] bg-[#FFF8E7] p-1 text-center" style={{ borderRadius: "3px" }}>
+                {(Object.keys(DEMO_CREDENTIALS) as DemoRole[]).map((role) => {
+                  const isSelected = selectedRole === role;
+                  return (
+                    <button
+                      key={role}
+                      type="button"
+                      onClick={() => handleRoleSelect(role)}
+                      className={`py-1.5 text-[11px] font-semibold uppercase tracking-wider transition ${
+                        isSelected
+                          ? "bg-[#D96B27] text-white"
+                          : "text-[#6B5A4A] hover:bg-[#F5EAD4] hover:text-[#3B2921]"
+                      }`}
+                      style={{ borderRadius: "2px" }}
+                    >
+                      {DEMO_CREDENTIALS[role].label}
+                    </button>
+                  );
+                })}
+              </div>
+            </CardHeader>
+
+            <CardContent className="pt-6">
+              {error && (
+                <Alert
+                  variant="destructive"
+                  className="mb-4 border-[#B94E27] bg-[#FFF8E7] text-[#B94E27]"
+                  style={{ borderRadius: "3px" }}
+                >
+                  <AlertDescription className="text-xs font-medium">
+                    {error}
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="username" className="text-xs font-semibold text-[#3B2921]">
+                    Institutional Username / Identifier
+                  </Label>
+                  <Input
+                    id="username"
+                    type="text"
+                    autoComplete="username"
+                    className="border-[#E8D8BD] bg-[#FFFDF5] text-xs text-[#3B2921] focus:border-[#D96B27] focus:ring-[#D96B27]"
+                    style={{ borderRadius: "3px" }}
+                    {...register("username")}
+                  />
+                  {errors.username && (
+                    <p className="text-[11px] text-[#B94E27]">{errors.username.message}</p>
+                  )}
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label htmlFor="password" className="text-xs font-semibold text-[#3B2921]">
+                    Account Security Password
+                  </Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    autoComplete="current-password"
+                    className="border-[#E8D8BD] bg-[#FFFDF5] text-xs text-[#3B2921] focus:border-[#D96B27] focus:ring-[#D96B27]"
+                    style={{ borderRadius: "3px" }}
+                    {...register("password")}
+                  />
+                  {errors.password && (
+                    <p className="text-[11px] text-[#B94E27]">{errors.password.message}</p>
+                  )}
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={loginMutation.isPending}
+                  className="w-full border border-[#B94E27] bg-[#D96B27] py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-[#B94E27] disabled:opacity-50"
+                  style={{ borderRadius: "3px" }}
+                >
+                  {loginMutation.isPending ? "Authenticating Session..." : "Authorize Portal Login"}
+                </Button>
+              </form>
+
+              <div className="mt-4 border-t border-[#E8D8BD] pt-3 text-center text-[11px] text-[#6B5A4A]">
+                <p>Protected by Student Sphere Role-Gated Access Control</p>
+                <p className="mt-1">
+                  Need credential recovery?{" "}
+                  <Link href="/contact" className="font-semibold text-[#D96B27] hover:underline">
+                    Inquire at Registry Desk
+                  </Link>
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+
+      <PublicFooter />
+    </div>
   );
 }

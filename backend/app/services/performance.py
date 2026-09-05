@@ -1,61 +1,55 @@
-from sqlalchemy import select
+from typing import List
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-
-from app.models.models import Mark
+from app.models.models import Student, Mark
 from app.schemas.performance import PerformanceResponse, PerformanceResultItem
-from app.services.grades import calculate_grade
-from app.services.students import get_student_or_404
-
-
-def _round_metric(value: float) -> float:
-    return round(float(value), 2)
+from app.services.grading import calculate_grade
 
 
 def get_student_performance(db: Session, student_id: int) -> PerformanceResponse:
-    get_student_or_404(db, student_id)
+    student = db.query(Student).filter(Student.id == student_id).first()
+    if not student:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Student {student_id} not found"
+        )
 
-    marks = db.scalars(
-        select(Mark)
-        .where(Mark.student_id == student_id)
+    marks: List[Mark] = (
+        db.query(Mark)
+        .filter(Mark.student_id == student_id)
         .order_by(Mark.exam_id.asc(), Mark.id.asc())
-    ).all()
+        .all()
+    )
 
-    if not marks:
-        return PerformanceResponse(
-            student_id=student_id,
-            total_marks=0,
-            marks_obtained=0,
-            percentage=0.0,
-            average_marks=0.0,
-            grade="F",
-            total_subjects=0,
-            results=[],
-        )
-
-    marks_obtained = float(sum(mark.marks for mark in marks))
     total_marks = len(marks) * 100
-    percentage = _round_metric((marks_obtained / total_marks) * 100)
-    average_marks = _round_metric(marks_obtained / len(marks))
-    overall_grade = calculate_grade(average_marks)
+    marks_obtained = float(sum(m.marks for m in marks)) if marks else 0.0
+    percentage = round((marks_obtained / total_marks) * 100.0, 2) if total_marks > 0 else 0.0
+    average_marks = round(marks_obtained / len(marks), 2) if marks else 0.0
+    grade = calculate_grade(percentage) if marks else "F"
+    total_subjects = len({m.subject_id for m in marks})
 
-    results = [
+    results_list: List[PerformanceResultItem] = [
         PerformanceResultItem(
-            mark_id=mark.id,
-            exam_id=mark.exam_id,
-            subject_id=mark.subject_id,
-            marks=mark.marks,
-            grade=calculate_grade(mark.marks),
+            mark_id=m.id,
+            exam_id=m.exam_id,
+            subject_id=m.subject_id,
+            marks=float(m.marks),
+            grade=calculate_grade(m.marks),
         )
-        for mark in marks
+        for m in marks
     ]
 
     return PerformanceResponse(
-        student_id=student_id,
+        student_id=student.id,
         total_marks=total_marks,
         marks_obtained=marks_obtained,
         percentage=percentage,
         average_marks=average_marks,
-        grade=overall_grade,
-        total_subjects=len(marks),
-        results=results,
+        grade=grade,
+        total_subjects=total_subjects,
+        results=results_list,
     )
+
+
+get_student_performance_summary = get_student_performance
+get_performance_summary = get_student_performance

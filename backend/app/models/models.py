@@ -249,6 +249,20 @@ class Exam(Base):
     academic_class: Mapped[AcademicClass] = relationship(back_populates="exams")
     marks: Mapped[list["Mark"]] = relationship(back_populates="exam")
 
+    def __repr__(self) -> str:
+        return (
+            f"Exam(id={self.id!r}, name={self.name!r}, "
+            f"exam_type={self.exam_type!r}, exam_date={self.exam_date!r})"
+        )
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.exam_type})" if self.exam_type else self.name
+
+    @property
+    def is_upcoming(self) -> bool:
+        """Return whether the exam date is today or in the future."""
+        return self.exam_date >= date.today()
+
 
 class Attendance(Base):
     __tablename__ = "attendances"
@@ -274,21 +288,21 @@ class Attendance(Base):
 
 class Mark(Base):
     __tablename__ = "marks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(Integer, ForeignKey("students.id", ondelete="CASCADE"), nullable=False)
+    subject_id = Column(Integer, ForeignKey("subjects.id", ondelete="CASCADE"), nullable=False)
+    exam_id = Column(Integer, ForeignKey("exams.id", ondelete="CASCADE"), nullable=False)
+    marks = Column(Float, nullable=False)
+
     __table_args__ = (
-        UniqueConstraint(
-            "exam_id",
-            "student_id",
-            "subject_id",
-            name="uq_marks_exam_student_subject",
-        ),
+        UniqueConstraint("student_id", "subject_id", "exam_id", name="uq_student_subject_exam"),
     )
 
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    exam_id: Mapped[int] = mapped_column(ForeignKey("exams.id"), index=True)
-    student_id: Mapped[int] = mapped_column(ForeignKey("students.id"), index=True)
-    subject_id: Mapped[int] = mapped_column(ForeignKey("subjects.id"), index=True)
-    marks: Mapped[float] = mapped_column(Float)
+    student = relationship("Student", back_populates="marks")
+    subject = relationship("Subject")
+    exam = relationship("Exam")
 
-    exam: Mapped["Exam"] = relationship(back_populates="marks")
-    student: Mapped[Student] = relationship(back_populates="marks")
-    subject: Mapped[Subject] = relationship(back_populates="marks")
+
+# Alias for backwards compatibility
+Examination = Exam

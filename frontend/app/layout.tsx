@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Student Management System",
-  description: "Manage students, teachers, classes, attendance, marks, and fees.",
+  title: "Student Sphere | Academic Management Platform",
+  description: "Student Sphere helps institutions manage students, faculty, academics, attendance, results, and announcements in one professional platform.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

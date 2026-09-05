@@ -28,6 +28,7 @@ export interface StudentCreate {
   date_of_birth?: string | null;
   course: string;
   semester: number;
+  user_id?: number | null;
   academic_class_id?: number | null;
 }
 

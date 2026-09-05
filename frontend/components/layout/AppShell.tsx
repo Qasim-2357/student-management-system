@@ -1,62 +1,39 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { X } from 'lucide-react';
-import { AppSidebar } from '@/components/layout/AppSidebar';
-import { AppHeader } from '@/components/layout/AppHeader';
+import { useState } from "react";
+import { AppSidebar } from "./AppSidebar";
+import { AppHeader } from "./AppHeader";
 
-export function AppShell({ children }: { children: ReactNode }) {
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const closeButtonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (!mobileNavOpen) return;
-
-    closeButtonRef.current?.focus();
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setMobileNavOpen(false);
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [mobileNavOpen]);
+export function AppShell({ children }: { children: React.ReactNode }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex h-dvh flex-col lg:flex-row">
-      {/* Persistent sidebar: desktop/tablet-wide only. */}
-      <aside className="hidden w-64 shrink-0 border-r border-border lg:block">
+    <div className="flex min-h-screen bg-[#FFF8E7] text-[#3B2921]">
+      {/* Permanent Desktop Sidebar */}
+      <div className="hidden md:block">
         <AppSidebar />
-      </aside>
+      </div>
 
-      {/* Off-canvas sidebar: mobile + tablet. */}
-      {mobileNavOpen ? (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <button
-            type="button"
-            aria-label="Close navigation menu"
-            className="absolute inset-0 bg-black/40"
-            onClick={() => setMobileNavOpen(false)}
+      {/* Mobile Drawer */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 flex md:hidden" role="dialog" aria-modal="true">
+          <div
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs transition-opacity"
+            onClick={() => setMobileOpen(false)}
+            aria-hidden="true"
           />
-          <div role="dialog" aria-modal="true" aria-label="Navigation menu" className="relative z-10 h-full w-72 max-w-[85vw] animate-[slide-in_180ms_ease-out] bg-background shadow-lg motion-reduce:animate-none">
-            <div className="flex items-center justify-end p-2">
-              <button
-                ref={closeButtonRef}
-                type="button"
-                onClick={() => setMobileNavOpen(false)}
-                aria-label="Close navigation menu"
-                className="rounded-md p-2 hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <X className="size-5" aria-hidden="true" />
-              </button>
-            </div>
-            <AppSidebar onNavigate={() => setMobileNavOpen(false)} />
+          <div className="relative z-10 flex w-64 flex-col bg-[#FFF8E7]">
+            <AppSidebar onClose={() => setMobileOpen(false)} />
           </div>
         </div>
-      ) : null}
+      )}
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <AppHeader onMenuClick={() => setMobileNavOpen(true)} isMenuOpen={mobileNavOpen} />
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6">{children}</main>
+      {/* Primary Application Surface */}
+      <div className="flex flex-1 flex-col overflow-hidden">
+        <AppHeader onOpenMobileMenu={() => setMobileOpen(true)} />
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+          <div className="mx-auto max-w-7xl">{children}</div>
+        </main>
       </div>
     </div>
   );

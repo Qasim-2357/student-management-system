@@ -1,57 +1,60 @@
-'use client';
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { getCurrentUser, login as loginApi, logout as logoutApi } from "@/lib/api/auth";
+import type { AuthUser, LoginRequest } from "@/lib/types/auth";
 
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getMe, login as loginRequest, logout as logoutRequest } from '@/lib/api/auth';
-import { ApiError } from '@/lib/api/client';
-import { queryKeys } from '@/lib/query-keys';
-import type { LoginRequest } from '@/lib/types/auth';
+export const queryKeys = {
+  auth: {
+    me: ["auth", "me"] as const,
+  },
+};
 
-/**
- * Session state, backed entirely by the backend's httpOnly cookie via
- * GET /auth/me. There is no client-stored token to read - a 401 here
- * just means "not logged in", which is a normal, expected state, not
- * a query failure to retry.
- */
 export function useAuth() {
-  const query = useQuery({
+  const {
+    data: user,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery<AuthUser>({
     queryKey: queryKeys.auth.me,
-    queryFn: getMe,
+    queryFn: getCurrentUser,
     retry: false,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  const isUnauthenticated = query.isError && query.error instanceof ApiError && query.error.status === 401;
-
   return {
-    user: query.data ?? null,
-    isLoading: query.isLoading,
-    isAuthenticated: Boolean(query.data),
-    isUnauthenticated,
-    error: query.error,
-    refetch: query.refetch,
+    user: user ?? null,
+    isLoading,
+    isAuthenticated: Boolean(user),
+    isUnauthenticated: !isLoading && !user,
+    error: error as Error | null,
+    refetch,
   };
 }
 
-export function useLoginMutation() {
+export function useLogin() {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
-  return useMutation({
-    mutationFn: (credentials: LoginRequest) => loginRequest(credentials),
-    onSuccess: (data) => {
-      // Seed the session query directly - avoids an extra round trip to /auth/me.
-      queryClient.setQueryData(queryKeys.auth.me, data.user);
+  return useMutation<AuthUser, Error, LoginRequest>({
+    mutationFn: (credentials: LoginRequest) => loginApi(credentials),
+    onSuccess: (user: AuthUser) => {
+      queryClient.setQueryData(queryKeys.auth.me, user);
+      router.push("/dashboard");
     },
   });
 }
 
-export function useLogoutMutation() {
+export function useLogout() {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
-  return useMutation({
-    mutationFn: () => logoutRequest(),
+  return useMutation<void, Error, void>({
+    mutationFn: logoutApi,
     onSuccess: () => {
       queryClient.setQueryData(queryKeys.auth.me, null);
       queryClient.clear();
+      router.push("/login");
     },
   });
 }
