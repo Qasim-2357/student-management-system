@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.models.models import Student, Teacher, User
 from app.schemas.teacher import TeacherCreate, TeacherUpdate
+from app.security import hash_password
 
 
 def get_teacher_or_404(db: Session, teacher_id: int) -> Teacher:
@@ -67,8 +68,34 @@ def _ensure_email_available(
 
 def create_teacher(db: Session, teacher_data: TeacherCreate) -> Teacher:
     _ensure_email_available(db, teacher_data.email)
-    _validate_relationships(db, user_id=teacher_data.user_id)
-    teacher = Teacher(**teacher_data.model_dump())
+    user_id = teacher_data.user_id
+    if user_id is None:
+        existing_user = db.scalar(select(User).where(User.email == teacher_data.email))
+        if existing_user is not None:
+            if existing_user.role != "teacher":
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="A user with this email already exists with another role",
+                )
+            user_id = existing_user.id
+        else:
+            user = User(
+                name=teacher_data.name,
+                email=teacher_data.email,
+                password_hash=hash_password(teacher_data.password or ""),
+                role="teacher",
+            )
+            db.add(user)
+            db.flush()
+            user_id = user.id
+
+    _validate_relationships(db, user_id=user_id)
+    teacher = Teacher(
+        user_id=user_id,
+        name=teacher_data.name,
+        email=teacher_data.email,
+        phone=teacher_data.phone,
+    )
     db.add(teacher)
     _commit_or_raise_conflict(db)
     db.refresh(teacher)

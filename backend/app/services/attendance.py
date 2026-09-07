@@ -4,7 +4,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
-from app.models.models import Attendance, Student, AcademicClass
+from app.models.models import Attendance, Student
 from app.schemas.attendance import AttendanceCreate, AttendanceUpdate
 
 
@@ -43,7 +43,9 @@ def list_attendance(
         query = query.filter(Attendance.student_id.in_(student_ids))
 
     if class_id is not None:
-        query = query.filter(Attendance.class_id == class_id)
+        query = query.join(Student, Student.id == Attendance.student_id).filter(
+            Student.academic_class_id == class_id
+        )
 
     if attendance_date is not None:
         query = query.filter(Attendance.attendance_date == attendance_date)
@@ -74,15 +76,6 @@ def create_attendance(db: Session, data: AttendanceCreate) -> Attendance:
             detail=f"Student {data.student_id} not found"
         )
 
-    class_id = data.class_id or getattr(student, "class_id", None)
-    if class_id:
-        cls = db.query(AcademicClass).filter(AcademicClass.id == class_id).first()
-        if not cls:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Class {class_id} not found"
-            )
-
     existing = db.query(Attendance).filter(
         Attendance.student_id == data.student_id,
         Attendance.attendance_date == data.attendance_date
@@ -95,10 +88,8 @@ def create_attendance(db: Session, data: AttendanceCreate) -> Attendance:
 
     attendance = Attendance(
         student_id=data.student_id,
-        class_id=class_id,
         attendance_date=data.attendance_date,
         status=data.status,
-        remarks=getattr(data, "remarks", None),
     )
     db.add(attendance)
     db.commit()
@@ -116,6 +107,11 @@ def update_attendance(
 
     new_date = update_data.get("attendance_date", record.attendance_date)
     new_student_id = update_data.get("student_id", record.student_id)
+    if not db.query(Student).filter(Student.id == new_student_id).first():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Student {new_student_id} not found",
+        )
 
     if new_date != record.attendance_date or new_student_id != record.student_id:
         existing = db.query(Attendance).filter(
@@ -169,7 +165,7 @@ def calculate_student_attendance_percentage(db: Session, student_id: int) -> dic
 
     present_days = db.query(func.count(Attendance.id)).filter(
         Attendance.student_id == student_id,
-        Attendance.status == "PRESENT"
+        Attendance.status == "present"
     ).scalar() or 0
 
     absent_days = total_records - present_days

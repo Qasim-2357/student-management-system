@@ -84,6 +84,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Teachers", href: "/teachers", roles: ["ADMIN"], icon: AcademicCapIcon },
   { label: "Classes", href: "/classes", roles: ["ADMIN", "TEACHER"], icon: BuildingIcon },
   { label: "Subjects", href: "/subjects", roles: ["ADMIN"], icon: BookIcon },
+  { label: "Relationships", href: "/relationships", roles: ["ADMIN"], icon: AcademicCapIcon },
   { label: "Examinations", href: "/exams", roles: ["ADMIN", "TEACHER"], icon: DocumentCheckIcon },
   { label: "Attendance", href: "/attendance", roles: ["ADMIN", "TEACHER"], icon: CalendarIcon },
   { label: "Marks", href: "/marks", roles: ["ADMIN", "TEACHER"], icon: ChartBarIcon },
@@ -93,6 +94,8 @@ const NAV_ITEMS: NavItem[] = [
     icon: Award,
     roles: ["ADMIN", "TEACHER", "STUDENT"],
   },
+  { label: "Assignments", href: "/assignments", roles: ["ADMIN", "TEACHER", "STUDENT"], icon: DocumentCheckIcon },
+  { label: "Fees", href: "/fees", roles: ["ADMIN", "STUDENT"], icon: DocumentCheckIcon },
 ];
 
 export function AppSidebar({ onClose }: { onClose?: () => void }) {

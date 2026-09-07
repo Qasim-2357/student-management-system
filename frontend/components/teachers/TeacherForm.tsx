@@ -11,10 +11,10 @@ import { ApiError } from '@/lib/api/client';
 import type { Teacher, TeacherCreate } from '@/lib/types/teachers';
 
 const teacherSchema = z.object({
-  user_id: z.string().regex(/^[1-9]\d*$/, 'User ID must be at least 1'),
   name: z.string().trim().min(1, 'Name is required').max(100),
   email: z.string().trim().email('Enter a valid email address'),
   phone: z.string().trim().min(1, 'Phone is required').max(20),
+  password: z.string().max(128).optional(),
 });
 
 type TeacherFormValues = z.infer<typeof teacherSchema>;
@@ -36,19 +36,25 @@ export function TeacherForm({ teacher, busy, error, onSubmit, submitLabel }: Tea
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<TeacherFormValues>({
     resolver: zodResolver(teacherSchema),
     defaultValues: {
-      user_id: teacher ? String(teacher.user_id) : '',
       name: teacher?.name ?? '',
       email: teacher?.email ?? '',
       phone: teacher?.phone ?? '',
+      password: '',
     },
   });
 
   const submit = handleSubmit((values) => {
-    onSubmit({ ...values, user_id: Number(values.user_id) });
+    if (!teacher && !values.password) {
+      setError('password', { message: 'Password is required for a teacher login' });
+      return;
+    }
+    const { password, ...profile } = values;
+    onSubmit(password ? { ...profile, password } : profile);
   });
 
   return (
@@ -59,10 +65,14 @@ export function TeacherForm({ teacher, busy, error, onSubmit, submitLabel }: Tea
         </Alert>
       ) : null}
       <div className="grid gap-4 sm:grid-cols-2">
-        <FormField label="User ID" name="user_id" type="number" error={errors.user_id?.message} register={register} />
+        <div className="space-y-1.5">
+          <Label>Teacher ID</Label>
+          <Input value={teacher?.teacher_code ?? 'Generated after creation'} readOnly />
+        </div>
         <FormField label="Name" name="name" error={errors.name?.message} register={register} />
         <FormField label="Email" name="email" type="email" error={errors.email?.message} register={register} />
         <FormField label="Phone" name="phone" error={errors.phone?.message} register={register} />
+        {!teacher ? <FormField label="Password" name="password" type="password" error={errors.password?.message} register={register} /> : null}
       </div>
       <Button type="submit" disabled={busy}>{busy ? 'Saving…' : submitLabel}</Button>
     </form>

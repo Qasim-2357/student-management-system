@@ -60,7 +60,9 @@ export default function StudentDetailPage({ params }: { params: Promise<{ id: st
           <h1 className="font-serif text-2xl font-bold tracking-tight text-[#3B2921]">
             {studentName}
           </h1>
-          <p className="mt-0.5 font-mono text-xs text-[#6B5A4A]">Roll Number: {rollNumber}</p>
+          <p className="mt-0.5 font-mono text-xs text-[#6B5A4A]">
+            Student ID: {studentResponse.student_code} / Roll Number: {rollNumber}
+          </p>
         </div>
 
         <div className="flex items-center gap-2">

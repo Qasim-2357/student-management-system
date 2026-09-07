@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,19 +32,21 @@ const DEMO_CREDENTIALS: Record<DemoRole, { username: string; label: string; desc
     desc: "Institutional Governance & Master Registry",
   },
   TEACHER: {
-    username: "teacher",
+  username: "teacher@example.com",
     label: "Faculty Desk",
     desc: "Attendance Rosters, Syllabus & Mark Entry",
   },
   STUDENT: {
-    username: "student",
+  username: "student@example.com",
     label: "Student Desk",
     desc: "Enrollment Record, Marks & Circulars",
   },
 };
 
 export default function LoginPage() {
-  const loginMutation = useLogin();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
+  const loginMutation = useLogin(redirect?.startsWith("/") ? redirect : "/dashboard");
   const [error, setError] = useState<string | null>(null);
   const [selectedRole, setSelectedRole] = useState<DemoRole>("ADMIN");
 

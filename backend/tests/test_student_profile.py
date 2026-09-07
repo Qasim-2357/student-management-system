@@ -243,6 +243,7 @@ class StudentProfileApiTests(unittest.TestCase):
             set(payload["student"].keys()),
             {
                 "id",
+                "student_code",
                 "name",
                 "roll_number",
                 "email",

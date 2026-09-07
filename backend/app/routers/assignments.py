@@ -1,7 +1,7 @@
 from datetime import date
 from math import ceil
 
-from fastapi import APIRouter, Depends, Query, Response, status as http_status
+from fastapi import APIRouter, Depends, HTTPException, Query, Response, status as http_status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -20,6 +20,7 @@ from app.services.assignments import (
     list_assignments,
     update_assignment,
 )
+from app.services.student_authorization import authorize_assignment_access
 
 router = APIRouter(prefix="/assignments", tags=["Assignments"])
 
@@ -53,8 +54,13 @@ def list_assignments_endpoint(
         page=page,
         page_size=page_size,
     )
+    authorized_assignments = [
+        assignment
+        for assignment in assignments
+        if _can_access_assignment(db, assignment, current_user)
+    ]
     return AssignmentListResponse(
-        items=assignments,
+        items=authorized_assignments,
         total=total,
         page=page,
         page_size=page_size,
@@ -68,7 +74,17 @@ def get_assignment_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return get_assignment_or_404(db, assignment_id)
+    assignment = get_assignment_or_404(db, assignment_id)
+    authorize_assignment_access(db, assignment, current_user)
+    return assignment
+
+
+def _can_access_assignment(db: Session, assignment, current_user: User) -> bool:
+    try:
+        authorize_assignment_access(db, assignment, current_user)
+    except HTTPException:
+        return False
+    return True
 
 
 @router.patch("/{assignment_id}", response_model=AssignmentResponse)

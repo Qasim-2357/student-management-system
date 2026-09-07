@@ -93,6 +93,9 @@ export async function apiFetch<T>(path: string, options: ApiRequestOptions = {})
   if (!response.ok) {
     const kind = kindForStatus(response.status);
     const message = extractMessage(payload, `Request failed with status ${response.status}`);
+    if (response.status === 401 && typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('auth:expired'));
+    }
     throw new ApiError(message, response.status, kind, payload);
   }
 

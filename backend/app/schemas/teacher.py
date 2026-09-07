@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
 
 
 def _non_blank_string(value: str | None, field_name: str) -> str | None:
@@ -11,10 +11,17 @@ def _non_blank_string(value: str | None, field_name: str) -> str | None:
 
 
 class TeacherCreate(BaseModel):
-    user_id: int = Field(ge=1)
+    user_id: int | None = Field(default=None, ge=1)
     name: str = Field(min_length=1, max_length=100)
     email: EmailStr
     phone: str = Field(min_length=1, max_length=20)
+    password: str | None = Field(default=None, min_length=8, max_length=128)
+
+    @model_validator(mode="after")
+    def require_password_for_new_account(self):
+        if self.user_id is None and not self.password:
+            raise ValueError("password is required when creating a teacher login account")
+        return self
 
     @field_validator("name", mode="before")
     @classmethod
@@ -78,6 +85,7 @@ class TeacherResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+    teacher_code: str
     user_id: int
     name: str
     email: EmailStr

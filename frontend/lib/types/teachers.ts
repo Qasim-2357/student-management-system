@@ -2,17 +2,17 @@ import type { PaginatedResponse } from '@/lib/types/students';
 
 export interface Teacher {
   id: number;
-  user_id: number;
+  teacher_code: string;
   name: string;
   email: string;
   phone: string;
 }
 
 export interface TeacherCreate {
-  user_id: number;
   name: string;
   email: string;
   phone: string;
+  password?: string;
 }
 
 export type TeacherUpdate = Partial<TeacherCreate>;

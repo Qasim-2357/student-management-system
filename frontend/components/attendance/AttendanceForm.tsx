@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ApiError } from '@/lib/api/client';
+import { useStudents } from '@/lib/hooks/use-students';
 import type { Attendance, AttendanceCreate, AttendanceStatus } from '@/lib/types/attendance';
 
 const attendanceSchema = z.object({
@@ -37,6 +38,7 @@ const STATUS_OPTIONS: Array<{ value: AttendanceStatus; label: string }> = [
 ];
 
 export function AttendanceForm({ attendance, busy, error, onSubmit, submitLabel }: AttendanceFormProps) {
+  const students = useStudents({ page: 1, page_size: 100 });
   const {
     register,
     handleSubmit,
@@ -66,8 +68,18 @@ export function AttendanceForm({ attendance, busy, error, onSubmit, submitLabel 
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
-          <Label htmlFor="student_id">Student ID</Label>
-          <Input id="student_id" type="number" min={1} aria-invalid={Boolean(errors.student_id)} {...register('student_id')} />
+          <Label htmlFor="student_id">Student</Label>
+          <select
+            id="student_id"
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+            aria-invalid={Boolean(errors.student_id)}
+            {...register('student_id', { valueAsNumber: true })}
+          >
+            <option value={0}>Select a student</option>
+            {students.data?.items.map((student) => (
+              <option key={student.id} value={student.id}>{student.name} ({student.roll_number})</option>
+            ))}
+          </select>
           {errors.student_id ? <p className="text-sm text-destructive">{errors.student_id.message}</p> : null}
         </div>
 

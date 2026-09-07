@@ -10,6 +10,7 @@ import { LoadingState } from "@/components/states/LoadingState"
 import { ErrorState } from "@/components/states/ErrorState"
 import { EmptyState } from "@/components/states/EmptyState"
 import type { Student } from "@/lib/types/students"
+import { useStudentCharts } from "@/lib/hooks/use-charts"
 
 export default function PerformanceDashboardPage() {
   const { user, isLoading: authLoading } = useAuth()
@@ -24,6 +25,7 @@ export default function PerformanceDashboardPage() {
     return selectedStudentId ?? studentList[0]?.id
   }, [isStudent, selectedStudentId, studentList])
   const performance = useStudentPerformance(activeStudentId)
+  const charts = useStudentCharts(activeStudentId)
 
   if (authLoading || studentsLoading) {
     return <LoadingState />
@@ -180,6 +182,20 @@ export default function PerformanceDashboardPage() {
               )}
             </CardContent>
           </Card>
+          <div className="grid gap-4 lg:grid-cols-3">
+            <Card className="border-[#E8DCC4] bg-[#FFFDF9]">
+              <CardHeader><CardTitle className="text-base">Subject averages</CardTitle></CardHeader>
+              <CardContent className="space-y-2 text-sm">{charts.marks.data?.data.length ? charts.marks.data.data.map((item) => <div key={item.subject_id} className="flex justify-between border-b py-2"><span>{item.subject_name}</span><span>{item.average_marks}</span></div>) : <p className="text-[#A89F91]">No subject chart data.</p>}</CardContent>
+            </Card>
+            <Card className="border-[#E8DCC4] bg-[#FFFDF9]">
+              <CardHeader><CardTitle className="text-base">Exam averages</CardTitle></CardHeader>
+              <CardContent className="space-y-2 text-sm">{charts.exams.data?.data.length ? charts.exams.data.data.map((item) => <div key={item.exam_id} className="flex justify-between border-b py-2"><span>{item.exam_name}</span><span>{item.average_marks}</span></div>) : <p className="text-[#A89F91]">No exam chart data.</p>}</CardContent>
+            </Card>
+            <Card className="border-[#E8DCC4] bg-[#FFFDF9]">
+              <CardHeader><CardTitle className="text-base">Attendance summary</CardTitle></CardHeader>
+              <CardContent>{charts.attendance.data ? <p className="text-sm">{charts.attendance.data.present} present / {charts.attendance.data.total} total ({charts.attendance.data.percentage}%)</p> : <p className="text-sm text-[#A89F91]">No attendance chart data.</p>}</CardContent>
+            </Card>
+          </div>
         </>
       )}
     </div>

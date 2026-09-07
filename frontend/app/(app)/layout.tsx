@@ -25,6 +25,15 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
     }
   }, [isUnauthenticated, pathname, router]);
 
+  useEffect(() => {
+    const handleExpiredSession = () => {
+      const destination = `${window.location.pathname}${window.location.search}`;
+      router.replace(`/login?redirect=${encodeURIComponent(destination)}`);
+    };
+    window.addEventListener('auth:expired', handleExpiredSession);
+    return () => window.removeEventListener('auth:expired', handleExpiredSession);
+  }, [router]);
+
   if (isLoading) {
     return (
       <div className="flex h-dvh items-center justify-center p-6">

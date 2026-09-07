@@ -15,6 +15,7 @@ from app.routers.fees import router as fees_router
 from app.routers.marks import router as marks_router
 from app.routers.grades import router as grades_router
 from app.routers.performance import router as performance_router
+from app.routers.relationships import router as relationships_router
 
 app = FastAPI(title="Student Management System API")
 
@@ -34,6 +35,7 @@ app.include_router(marks_router)
 app.include_router(grades_router)
 app.include_router(performance_router)
 app.include_router(charts_router)
+app.include_router(relationships_router)
 
 @app.get("/")
 def root():

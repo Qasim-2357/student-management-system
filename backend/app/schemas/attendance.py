@@ -13,6 +13,7 @@ class AttendanceCreate(BaseModel):
 
 
 class AttendanceUpdate(BaseModel):
+    student_id: int | None = Field(default=None, ge=1)
     attendance_date: date | None = None
     status: AttendanceStatus | None = None
 

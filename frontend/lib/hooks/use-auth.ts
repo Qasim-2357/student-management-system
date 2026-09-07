@@ -32,7 +32,7 @@ export function useAuth() {
   };
 }
 
-export function useLogin() {
+export function useLogin(redirect = "/dashboard") {
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -40,7 +40,7 @@ export function useLogin() {
     mutationFn: (credentials: LoginRequest) => loginApi(credentials),
     onSuccess: (user: AuthUser) => {
       queryClient.setQueryData(queryKeys.auth.me, user);
-      router.push("/dashboard");
+      router.push(redirect);
     },
   });
 }

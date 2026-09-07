@@ -89,15 +89,28 @@ def create_mark(db: Session, data: MarkCreate) -> Mark:
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Student {data.student_id} not found"
         )
-    if not db.query(Subject).filter(Subject.id == data.subject_id).first():
+    subject = db.query(Subject).filter(Subject.id == data.subject_id).first()
+    if not subject:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Subject {data.subject_id} not found"
         )
-    if not db.query(Exam).filter(Exam.id == data.exam_id).first():
+    exam = db.query(Exam).filter(Exam.id == data.exam_id).first()
+    if not exam:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Exam {data.exam_id} not found"
+        )
+    student = db.query(Student).filter(Student.id == data.student_id).first()
+    if student.academic_class_id != exam.academic_class_id:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Student does not belong to the exam's academic class",
+        )
+    if subject not in exam.academic_class.subjects:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Subject is not assigned to the exam's academic class",
         )
 
     existing = db.query(Mark).filter(
@@ -144,12 +157,25 @@ def update_mark(
     new_subject = update_data.get("subject_id", mark.subject_id)
     new_exam = update_data.get("exam_id", mark.exam_id)
 
-    if new_student != mark.student_id and not db.query(Student).filter(Student.id == new_student).first():
+    student = db.query(Student).filter(Student.id == new_student).first()
+    if new_student != mark.student_id and not student:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Student {new_student} not found")
-    if new_subject != mark.subject_id and not db.query(Subject).filter(Subject.id == new_subject).first():
+    subject = db.query(Subject).filter(Subject.id == new_subject).first()
+    if new_subject != mark.subject_id and not subject:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Subject {new_subject} not found")
-    if new_exam != mark.exam_id and not db.query(Exam).filter(Exam.id == new_exam).first():
+    exam = db.query(Exam).filter(Exam.id == new_exam).first()
+    if new_exam != mark.exam_id and not exam:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Exam {new_exam} not found")
+    if student.academic_class_id != exam.academic_class_id:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Student does not belong to the exam's academic class",
+        )
+    if subject not in exam.academic_class.subjects:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="Subject is not assigned to the exam's academic class",
+        )
 
     if new_student != mark.student_id or new_subject != mark.subject_id or new_exam != mark.exam_id:
         existing = db.query(Mark).filter(

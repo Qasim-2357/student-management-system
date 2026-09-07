@@ -125,6 +125,7 @@ class MarkApiTests(unittest.TestCase):
         payload.update(overrides)
         subject = Subject(**payload)
         self.db.add(subject)
+        self.academic_class.subjects.append(subject)
         self.db.commit()
         self.db.refresh(subject)
         return subject

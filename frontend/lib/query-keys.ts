@@ -41,4 +41,16 @@ export const queryKeys = {
     all: ["performance"] as const,
     student: (id: number) => ["performance", "student", id] as const,
   },
+  assignments: {
+    all: ['assignments'] as const,
+    list: (params: unknown) => ['assignments', 'list', params] as const,
+    detail: (id: number) => ['assignments', 'detail', id] as const,
+    submissions: (id: number) => ['assignments', 'submissions', id] as const,
+  },
+  fees: {
+    all: ['fees'] as const,
+    list: (params: unknown) => ['fees', 'list', params] as const,
+    detail: (id: number) => ['fees', 'detail', id] as const,
+    receipt: (id: number) => ['fees', 'receipt', id] as const,
+  },
 }

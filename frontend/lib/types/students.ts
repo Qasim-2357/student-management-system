@@ -8,6 +8,7 @@ export interface PaginatedResponse<T> {
 
 export interface Student {
   id: number;
+  student_code: string;
   user_id: number | null;
   academic_class_id: number | null;
   name: string;

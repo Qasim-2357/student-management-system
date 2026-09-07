@@ -8,7 +8,7 @@ from sqlalchemy.pool import StaticPool
 
 from app.database import Base, get_db
 from app.main import app
-from app.models.models import AcademicClass, Assignment, Student, Subject, User
+from app.models.models import AcademicClass, Assignment, Student, Subject, Teacher, User
 from app.security import hash_password
 
 
@@ -32,6 +32,16 @@ class AssignmentApiTests(unittest.TestCase):
         self.teacher = self._create_user("teacher@example.com", "teacher")
         self.academic_class = self._create_academic_class()
         self.subject = self._create_subject(name="Mathematics", code="MATH-101")
+        self.teacher_profile = Teacher(
+            user_id=self.teacher.id,
+            name="Teacher One",
+            email="teacher-profile@example.com",
+            phone="5557654321",
+        )
+        self.teacher_profile.academic_classes.append(self.academic_class)
+        self.teacher_profile.subjects.append(self.subject)
+        self.db.add(self.teacher_profile)
+        self.db.commit()
         self.student = self._create_student()
 
     def tearDown(self):

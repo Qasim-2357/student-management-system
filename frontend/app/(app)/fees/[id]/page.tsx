@@ -1,0 +1,10 @@
+'use client';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { useFee, useFeeReceipt } from '@/lib/hooks/use-fees';
+import { useAuth } from '@/lib/hooks/use-auth';
+import { buttonVariants } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { LoadingState } from '@/components/states/LoadingState';
+import { ErrorState } from '@/components/states/ErrorState';
+export default function FeeDetailPage() { const { id } = useParams<{ id: string }>(); const fee = useFee(Number(id)); const receipt = useFeeReceipt(Number(id)); const { user } = useAuth(); if (fee.isLoading) return <LoadingState />; if (fee.isError || !fee.data) return <ErrorState title="Fee record unavailable" onRetry={() => fee.refetch()} />; const f = fee.data; return <div className="mx-auto max-w-3xl space-y-6"><div className="flex items-center justify-between"><div><p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">Fee record</p><h1 className="text-3xl font-semibold">Student #{f.student_id}</h1></div>{user?.role === 'admin' && <Link className={buttonVariants()} href={`/fees/${f.id}/edit`}>Edit</Link>}</div><Card><CardHeader><CardTitle>Payment details</CardTitle></CardHeader><CardContent className="grid gap-3 text-sm sm:grid-cols-2"><p>Amount: {f.amount.toFixed(2)}</p><p>Paid: {f.paid_amount.toFixed(2)}</p><p>Due: {f.due_amount.toFixed(2)}</p><p>Status: <span className="capitalize">{f.status}</span></p><p>Due date: {f.due_date}</p></CardContent></Card><Card><CardHeader><CardTitle>Receipt</CardTitle></CardHeader><CardContent>{receipt.isLoading ? <LoadingState rows={2} /> : receipt.isError ? <ErrorState title="Receipt unavailable" onRetry={() => receipt.refetch()} /> : receipt.data ? <div className="space-y-2 text-sm"><p>Student: {receipt.data.student.name} ({receipt.data.student.roll_number})</p><p>Email: {receipt.data.student.email}</p><p>Class: {receipt.data.academic_class?.name ?? 'Not assigned'}</p><a className="underline" href={`/api/fees/${f.id}/receipt/pdf`}>Download PDF receipt</a></div> : null}</CardContent></Card></div>; }

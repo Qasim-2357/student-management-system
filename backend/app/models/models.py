@@ -92,6 +92,10 @@ class Student(Base):
         back_populates="student"
     )
 
+    @property
+    def student_code(self) -> str:
+        return f"STU-{self.id:04d}"
+
 
 class Assignment(Base):
     __tablename__ = "assignments"
@@ -191,6 +195,10 @@ class Teacher(Base):
         secondary=teacher_academic_classes,
         back_populates="teachers",
     )
+
+    @property
+    def teacher_code(self) -> str:
+        return f"TCH-{self.id:04d}"
 
 
 class AcademicClass(Base):
