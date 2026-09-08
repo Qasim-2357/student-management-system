@@ -6,7 +6,8 @@ import type { NextConfig } from "next";
 // httpOnly access_token cookie same-origin from the browser's point of
 // view, which matters because the backend does not currently configure
 // CORS for credentialed cross-origin requests.
-const BACKEND_API_URL = process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
+const BACKEND_API_URL =
+  process.env.BACKEND_API_URL ?? "http://127.0.0.1:8000";
 
 const nextConfig: NextConfig = {
   async rewrites() {
@@ -14,6 +15,33 @@ const nextConfig: NextConfig = {
       {
         source: "/api/:path*",
         destination: `${BACKEND_API_URL}/:path*`,
+      },
+    ];
+  },
+
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "X-Frame-Options",
+            value: "DENY",
+          },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+          {
+            key: "Permissions-Policy",
+            value:
+              "camera=(), microphone=(), geolocation=(), payment=()",
+          },
+        ],
       },
     ];
   },

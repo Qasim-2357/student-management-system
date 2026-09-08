@@ -18,6 +18,7 @@ from app.schemas.student import (
     StudentProfileResponse,
     StudentUpdate,
 )
+from app.security import hash_password
 from app.services.grading import calculate_grade
 
 
@@ -195,12 +196,43 @@ def _ensure_roll_number_available(
 
 def create_student(db: Session, student_data: StudentCreate) -> Student:
     _ensure_roll_number_available(db, student_data.roll_number)
+
+    payload = student_data.model_dump(exclude={"password"})
+    user_id = payload["user_id"]
+
+    # Opt-in inline account creation: if no existing user is being linked
+    # and a password was supplied, create the login account here so the
+    # student can authenticate with their institutional identifier
+    # (STU-XXXX) once the profile exists. Omitting the password preserves
+    # the existing behaviour of creating a student profile with no linked
+    # login account.
+    if user_id is None and student_data.password:
+        existing_user = db.scalar(select(User).where(User.email == student_data.email))
+        if existing_user is not None:
+            if existing_user.role != "student":
+                raise HTTPException(
+                    status_code=status.HTTP_409_CONFLICT,
+                    detail="A user with this email already exists with another role",
+                )
+            user_id = existing_user.id
+        else:
+            user = User(
+                name=student_data.name,
+                email=student_data.email,
+                password_hash=hash_password(student_data.password),
+                role="student",
+            )
+            db.add(user)
+            db.flush()
+            user_id = user.id
+        payload["user_id"] = user_id
+
     _validate_relationships(
         db,
-        user_id=student_data.user_id,
-        academic_class_id=student_data.academic_class_id,
+        user_id=payload["user_id"],
+        academic_class_id=payload["academic_class_id"],
     )
-    student = Student(**student_data.model_dump())
+    student = Student(**payload)
     db.add(student)
     _commit_or_raise_conflict(db)
     db.refresh(student)
@@ -238,7 +270,7 @@ def delete_student(db: Session, student: Student) -> None:
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="Student cannot be deleted while related marks exist",
+           detail="Student cannot be deleted while related academic records exist",
         ) from None
 
 

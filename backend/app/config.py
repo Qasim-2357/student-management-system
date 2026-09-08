@@ -11,7 +11,9 @@ _PLACEHOLDER_SECRETS = {
     "your-secret-key",
     "development-only-secret-change-me",
 }
+
 _DEVELOPMENT_SECRET = "development-only-secret-change-me"
+_MIN_PRODUCTION_SECRET_LENGTH = 32
 
 
 def is_production() -> bool:
@@ -30,10 +32,18 @@ def get_database_url() -> str:
 
 def get_jwt_secret() -> str:
     secret = os.getenv("JWT_SECRET_KEY", "").strip()
-    if is_production() and secret.lower() in _PLACEHOLDER_SECRETS:
-        raise RuntimeError(
-            "JWT_SECRET_KEY must be set to a non-placeholder value in production"
-        )
+
+    if is_production():
+        if secret.lower() in _PLACEHOLDER_SECRETS:
+            raise RuntimeError(
+                "JWT_SECRET_KEY must be set to a non-placeholder value in production"
+            )
+
+        if len(secret) < _MIN_PRODUCTION_SECRET_LENGTH:
+            raise RuntimeError(
+                "JWT_SECRET_KEY must be at least 32 characters in production"
+            )
+
     return secret or _DEVELOPMENT_SECRET
 
 
@@ -43,8 +53,11 @@ def validate_configuration() -> None:
 
 
 DATABASE_URL = get_database_url()
+
 JWT_SECRET_KEY = get_jwt_secret()
+
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
+
 ACCESS_TOKEN_EXPIRE_MINUTES = int(
     os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
 )

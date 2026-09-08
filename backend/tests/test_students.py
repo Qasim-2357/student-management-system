@@ -101,6 +101,38 @@ class StudentApiTests(unittest.TestCase):
         self.assertEqual(response.json()["roll_number"], "ROLL-001")
         self.assertEqual(response.json()["academic_class_id"], academic_class.id)
 
+    def test_create_student_with_password_creates_linked_account_and_allows_login(self):
+        response = self._create_student_as_admin(
+            email="new.student@studentsphere.edu",
+            password="StudentPass@123",
+        )
+
+        self.assertEqual(response.status_code, 201, response.text)
+        body = response.json()
+        self.assertIsNotNone(body["user_id"])
+        self.assertEqual(body["student_code"], f"STU-{body['id']:04d}")
+
+        # The new account must authenticate with the institutional
+        # identifier, not the numeric database id or the raw password
+        # alone.
+        self.client.post("/auth/logout")
+        login_response = self.client.post(
+            "/auth/login",
+            json={"identifier": body["student_code"], "password": "StudentPass@123"},
+        )
+        self.assertEqual(login_response.status_code, 200, login_response.text)
+        self.assertEqual(login_response.json()["user"]["id"], body["user_id"])
+        self.assertEqual(login_response.json()["user"]["role"], "student")
+
+    def test_create_student_without_password_has_no_linked_account(self):
+        # Existing behaviour: a student profile can still be created with
+        # no login account at all when neither user_id nor password is
+        # supplied.
+        response = self._create_student_as_admin()
+
+        self.assertEqual(response.status_code, 201, response.text)
+        self.assertIsNone(response.json()["user_id"])
+
     def test_admin_user_cannot_be_linked_to_student(self):
         response = self._create_student_as_admin(user_id=self.admin.id)
 

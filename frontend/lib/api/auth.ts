@@ -5,7 +5,7 @@ export async function login(credentials: LoginRequest): Promise<AuthUser> {
   const response = await apiFetch<LoginResponse>("/auth/login", {
     method: "POST",
     body: {
-      email: credentials.email,
+      identifier: credentials.identifier,
       password: credentials.password,
     },
   });

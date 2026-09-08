@@ -1,8 +1,10 @@
+import re
 from datetime import datetime, timedelta, timezone
 
 import bcrypt
 from fastapi import Cookie, Depends, HTTPException, status
 from jose import JWTError, jwt
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.config import (
@@ -11,7 +13,46 @@ from app.config import (
     JWT_SECRET_KEY,
 )
 from app.database import get_db
-from app.models.models import User
+from app.models.models import Student, Teacher, User
+
+_IDENTIFIER_PATTERN = re.compile(r"^(STU|TCH|ADM)-(\d+)$")
+
+
+def resolve_login_user(db: Session, identifier: str) -> User | None:
+    """Resolve a login identifier to the User account that should
+    authenticate.
+
+    Accepts institutional identifiers of the form ``STU-0012``,
+    ``TCH-0004``, or ``ADM-0001`` (case-insensitive, whitespace-trimmed by
+    the caller), derived from the corresponding Student/Teacher profile id
+    or, for admins, the User id directly. Falls back to a legacy exact-match
+    email lookup for backward compatibility.
+
+    Returns None if nothing matches. Callers must treat a None result
+    identically to an incorrect password (a generic authentication failure)
+    so that identifier existence is never revealed.
+    """
+    value = identifier.strip()
+    if not value:
+        return None
+
+    match = _IDENTIFIER_PATTERN.match(value.upper())
+    if match:
+        prefix, number = match.groups()
+        profile_id = int(number)
+        if prefix == "STU":
+            student = db.get(Student, profile_id)
+            return student.user if student is not None else None
+        if prefix == "TCH":
+            teacher = db.get(Teacher, profile_id)
+            return teacher.user if teacher is not None else None
+        # prefix == "ADM": no separate Admin profile table exists, so the
+        # identifier maps directly to a User id, scoped to the admin role.
+        user = db.get(User, profile_id)
+        return user if user is not None and user.role == "admin" else None
+
+    # Legacy/back-compat path: treat the value as an email address.
+    return db.scalar(select(User).where(User.email == value))
 
 
 def hash_password(password: str) -> str:

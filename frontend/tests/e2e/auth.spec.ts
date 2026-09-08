@@ -1,71 +1,156 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
-/**
- * These tests exercise the REAL backend auth flow (POST /auth/login,
- * GET /auth/me, POST /auth/logout via the httpOnly access_token cookie),
- * not a frontend fake. They require:
- *
- *  1. The FastAPI backend running and reachable at BACKEND_API_URL
- *     (see next.config.ts / .env.local.example).
- *  2. A seeded account to log in with. Defaults below match what the
- *     backend's own create_admin.py seeds (admin@example.com), but can be
- *     overridden with E2E_ADMIN_EMAIL / E2E_ADMIN_PASSWORD for any other
- *     environment/test database.
- */
-const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL || 'admin@example.com';
-const ADMIN_PASSWORD = process.env.E2E_ADMIN_PASSWORD || 'Admin@123';
+const ADMIN_IDENTIFIER =
+  process.env.E2E_ADMIN_IDENTIFIER || 'ADM-0001';
+
+const ADMIN_PASSWORD =
+  process.env.E2E_ADMIN_PASSWORD || 'Admin@123';
+
+async function fillIdentifier(page: Page, value: string) {
+  const identifierInput = page.getByLabel(
+    'Institutional Username / Identifier'
+  );
+
+  await identifierInput.click();
+  await identifierInput.press('Control+A');
+  await identifierInput.press('Backspace');
+  await identifierInput.fill(value);
+}
 
 test.describe('authentication (real backend)', () => {
-  test('valid login redirects to the protected dashboard', async ({ page }) => {
+  test('valid admin login redirects to the protected dashboard', async ({
+    page,
+  }) => {
     await page.goto('/login');
-    await page.getByLabel('Email').fill(ADMIN_EMAIL);
-    await page.getByLabel('Password').fill(ADMIN_PASSWORD);
-    await page.getByRole('button', { name: 'Sign in' }).click();
+
+    await fillIdentifier(page, ADMIN_IDENTIFIER);
+
+    await page
+      .getByLabel('Account Security Password')
+      .fill(ADMIN_PASSWORD);
+
+    await page
+      .getByRole('button', {
+        name: /authorize portal login/i,
+      })
+      .click();
 
     await expect(page).toHaveURL(/\/dashboard$/);
-    await expect(page.getByRole('heading', { name: /Welcome/ })).toBeVisible();
+
+    await expect(
+      page.getByRole('heading', {
+        name: /institutional dashboard/i,
+      })
+    ).toBeVisible();
   });
 
-  test('invalid credentials show an authentication error and stay on /login', async ({ page }) => {
+  test('invalid credentials show an authentication error and stay on login', async ({
+    page,
+  }) => {
     await page.goto('/login');
-    await page.getByLabel('Email').fill('wrong@example.com');
-    await page.getByLabel('Password').fill('wrong-password');
-    await page.getByRole('button', { name: 'Sign in' }).click();
 
-    await expect(page.getByRole('main').getByRole('alert')).toContainText('Invalid email or password.');
+    await fillIdentifier(page, 'ADM-999999');
+
+    await page
+      .getByLabel('Account Security Password')
+      .fill('wrong-password');
+
+    await page
+      .getByRole('button', {
+        name: /authorize portal login/i,
+      })
+      .click();
+
+    await expect(
+      page.getByText('Invalid identifier or password', {
+        exact: true,
+      })
+    ).toBeVisible();
+
     await expect(page).toHaveURL(/\/login$/);
   });
 
-  test('unauthenticated users are redirected away from a protected route', async ({ page }) => {
+  test('unauthenticated users are redirected away from a protected route', async ({
+    page,
+  }) => {
     await page.goto('/dashboard');
 
-    await expect(page).toHaveURL(/\/login\?redirect=%2Fdashboard/);
-    await expect(page.getByText('Please sign in to continue.')).toBeVisible();
+    await expect(page).toHaveURL(
+      /\/login\?redirect=%2Fdashboard/
+    );
+
+    await expect(
+      page.getByRole('heading', {
+        name: /institutional portal/i,
+      })
+    ).toBeVisible();
   });
 
-  test('logout clears the session and returns to a protected-route redirect', async ({ page }) => {
+  test('logout clears the session and protects the dashboard again', async ({
+    page,
+  }) => {
     await page.goto('/login');
-    await page.getByLabel('Email').fill(ADMIN_EMAIL);
-    await page.getByLabel('Password').fill(ADMIN_PASSWORD);
-    await page.getByRole('button', { name: 'Sign in' }).click();
+
+    await fillIdentifier(page, ADMIN_IDENTIFIER);
+
+    await page
+      .getByLabel('Account Security Password')
+      .fill(ADMIN_PASSWORD);
+
+    await page
+      .getByRole('button', {
+        name: /authorize portal login/i,
+      })
+      .click();
+
     await expect(page).toHaveURL(/\/dashboard$/);
 
-    await page.getByRole('button', { name: 'Sign out' }).click();
-    await expect(page).toHaveURL(/\/login$/);
+    await page
+      .getByRole('button', {
+        name: /sign out/i,
+      })
+      .click();
 
-    // The session cookie is gone server-side - protected routes bounce again.
+    await expect(page).toHaveURL(
+      /\/login\?redirect=%2Fdashboard/
+    );
+
     await page.goto('/dashboard');
-    await expect(page).toHaveURL(/\/login\?redirect=%2Fdashboard/);
+
+    await expect(page).toHaveURL(
+      /\/login\?redirect=%2Fdashboard/
+    );
   });
 
-  test('authenticated session loads the protected shell (sidebar + header)', async ({ page }) => {
+  test('authenticated session loads the protected shell', async ({
+    page,
+  }) => {
     await page.goto('/login');
-    await page.getByLabel('Email').fill(ADMIN_EMAIL);
-    await page.getByLabel('Password').fill(ADMIN_PASSWORD);
-    await page.getByRole('button', { name: 'Sign in' }).click();
+
+    await fillIdentifier(page, ADMIN_IDENTIFIER);
+
+    await page
+      .getByLabel('Account Security Password')
+      .fill(ADMIN_PASSWORD);
+
+    await page
+      .getByRole('button', {
+        name: /authorize portal login/i,
+      })
+      .click();
 
     await expect(page).toHaveURL(/\/dashboard$/);
-    await expect(page.getByRole('navigation', { name: 'Primary' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible();
+
+    await expect(
+      page.getByRole('navigation', {
+        name: /portal navigation/i,
+      })
+    ).toBeVisible();
+
+    await expect(
+      page.getByRole('button', {
+        name: /sign out/i,
+      })
+    ).toBeVisible();
   });
 });

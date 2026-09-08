@@ -32,6 +32,10 @@ class AssignmentApiTests(unittest.TestCase):
         self.teacher = self._create_user("teacher@example.com", "teacher")
         self.academic_class = self._create_academic_class()
         self.subject = self._create_subject(name="Mathematics", code="MATH-101")
+
+        self.academic_class.subjects.append(self.subject)
+        self.db.commit()
+
         self.teacher_profile = Teacher(
             user_id=self.teacher.id,
             name="Teacher One",
@@ -309,11 +313,16 @@ class AssignmentApiTests(unittest.TestCase):
         self.assertEqual(response.json()["total"], 1)
 
     def test_filter_assignments_by_class(self):
-        academic_class_2 = self._create_academic_class(name="CS Semester 4", code="CS-4")
+        academic_class_2 = self._create_academic_class(
+            name="CS Semester 4",
+            code="CS-4",
+        )
         self._create_assignment(academic_class_id=self.academic_class.id)
         self._create_assignment(academic_class_id=academic_class_2.id)
         self._login(self.teacher.email)
-        response = self.client.get(f"/assignments?academic_class_id={self.academic_class.id}")
+        response = self.client.get(
+            f"/assignments?academic_class_id={self.academic_class.id}"
+        )
         self.assertEqual(response.status_code, 200, response.text)
         self.assertEqual(response.json()["total"], 1)
 
@@ -322,7 +331,9 @@ class AssignmentApiTests(unittest.TestCase):
         self._create_assignment(title="A", due_date=target)
         self._create_assignment(title="B", due_date=date(2026, 2, 15))
         self._login(self.teacher.email)
-        response = self.client.get(f"/assignments?due_date={target.isoformat()}")
+        response = self.client.get(
+            f"/assignments?due_date={target.isoformat()}"
+        )
         self.assertEqual(response.status_code, 200, response.text)
         self.assertEqual(response.json()["total"], 1)
 
@@ -340,16 +351,28 @@ class AssignmentApiTests(unittest.TestCase):
         self.assertEqual(body["total_pages"], 2)
 
     def test_assignment_deterministic_ordering(self):
-        self._create_assignment(title="Later", due_date=date(2026, 3, 15))
-        self._create_assignment(title="Earlier", due_date=date(2026, 1, 15))
+        self._create_assignment(
+            title="Later",
+            due_date=date(2026, 3, 15),
+        )
+        self._create_assignment(
+            title="Earlier",
+            due_date=date(2026, 1, 15),
+        )
         self._login(self.teacher.email)
         response = self.client.get("/assignments")
         due_dates = [item["due_date"] for item in response.json()["items"]]
-        self.assertEqual(due_dates, ["2026-01-15", "2026-03-15"])
+        self.assertEqual(
+            due_dates,
+            ["2026-01-15", "2026-03-15"],
+        )
 
     def test_delete_assignment(self):
         assignment = self._create_assignment()
         self._login(self.admin.email)
         response = self.client.delete(f"/assignments/{assignment.id}")
         self.assertEqual(response.status_code, 204, response.text)
-        self.assertEqual(self.client.get(f"/assignments/{assignment.id}").status_code, 404)
+        self.assertEqual(
+            self.client.get(f"/assignments/{assignment.id}").status_code,
+            404,
+        )

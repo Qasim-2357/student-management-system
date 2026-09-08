@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
@@ -10,7 +10,13 @@ import { BrandMark } from "@/components/site/BrandMark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useLogin } from "@/lib/hooks/use-auth";
 import { PublicHeader } from "@/components/layout/PublicHeader";
@@ -25,28 +31,37 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 type DemoRole = "ADMIN" | "TEACHER" | "STUDENT";
 
-const DEMO_CREDENTIALS: Record<DemoRole, { username: string; label: string; desc: string }> = {
+const DEMO_CREDENTIALS: Record<
+  DemoRole,
+  { username: string; label: string; desc: string }
+> = {
   ADMIN: {
-    username: "admin@example.com",
+    username: "ADM-0001",
     label: "Administrator",
     desc: "Institutional Governance & Master Registry",
   },
   TEACHER: {
-  username: "teacher@example.com",
+    username: "TCH-0001",
     label: "Faculty Desk",
     desc: "Attendance Rosters, Syllabus & Mark Entry",
   },
   STUDENT: {
-  username: "student@example.com",
+    username: "STU-0001",
     label: "Student Desk",
     desc: "Enrollment Record, Marks & Circulars",
   },
 };
 
-export default function LoginPage() {
+function LoginContent() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get("redirect");
-  const loginMutation = useLogin(redirect?.startsWith("/") ? redirect : "/dashboard");
+
+  const loginMutation = useLogin(
+    redirect?.startsWith("/") && !redirect.startsWith("//")
+      ? redirect
+      : "/dashboard"
+  );
+
   const [error, setError] = useState<string | null>(null);
   const [selectedRole, setSelectedRole] = useState<DemoRole>("ADMIN");
 
@@ -72,14 +87,18 @@ export default function LoginPage() {
 
   const onSubmit = (data: LoginFormValues) => {
     setError(null);
+
     loginMutation.mutate(
       {
-        email: data.username,
+        identifier: data.username,
         password: data.password,
       },
       {
         onError: (err: Error) => {
-          setError(err.message || "Invalid credentials. Please verify username and password.");
+          setError(
+            err.message ||
+              "Invalid credentials. Please verify username and password."
+          );
         },
       }
     );
@@ -95,11 +114,14 @@ export default function LoginPage() {
             <Link href="/" className="inline-flex justify-center">
               <BrandMark size="lg" />
             </Link>
+
             <h1 className="mt-3 font-serif text-xl font-bold tracking-tight text-[#3B2921]">
               Institutional Portal Login
             </h1>
+
             <p className="text-xs text-[#6B5A4A]">
-              Central authentication gateway for students, faculty, and administrative staff.
+              Central authentication gateway for students, faculty, and
+              administrative staff.
             </p>
           </div>
 
@@ -111,13 +133,19 @@ export default function LoginPage() {
               <CardTitle className="font-serif text-base font-bold text-[#3B2921]">
                 Sign In to Academic Account
               </CardTitle>
+
               <CardDescription className="text-xs text-[#6B5A4A]">
-                Select your designated role to load corresponding account identifier.
+                Select your designated role to load corresponding account
+                identifier.
               </CardDescription>
 
-              <div className="mt-3 grid grid-cols-3 gap-1 border border-[#E8D8BD] bg-[#FFF8E7] p-1 text-center" style={{ borderRadius: "3px" }}>
+              <div
+                className="mt-3 grid grid-cols-3 gap-1 border border-[#E8D8BD] bg-[#FFF8E7] p-1 text-center"
+                style={{ borderRadius: "3px" }}
+              >
                 {(Object.keys(DEMO_CREDENTIALS) as DemoRole[]).map((role) => {
                   const isSelected = selectedRole === role;
+
                   return (
                     <button
                       key={role}
@@ -150,11 +178,18 @@ export default function LoginPage() {
                 </Alert>
               )}
 
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 <div className="space-y-1.5">
-                  <Label htmlFor="username" className="text-xs font-semibold text-[#3B2921]">
+                  <Label
+                    htmlFor="username"
+                    className="text-xs font-semibold text-[#3B2921]"
+                  >
                     Institutional Username / Identifier
                   </Label>
+
                   <Input
                     id="username"
                     type="text"
@@ -163,15 +198,22 @@ export default function LoginPage() {
                     style={{ borderRadius: "3px" }}
                     {...register("username")}
                   />
+
                   {errors.username && (
-                    <p className="text-[11px] text-[#B94E27]">{errors.username.message}</p>
+                    <p className="text-[11px] text-[#B94E27]">
+                      {errors.username.message}
+                    </p>
                   )}
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="password" className="text-xs font-semibold text-[#3B2921]">
+                  <Label
+                    htmlFor="password"
+                    className="text-xs font-semibold text-[#3B2921]"
+                  >
                     Account Security Password
                   </Label>
+
                   <Input
                     id="password"
                     type="password"
@@ -180,8 +222,11 @@ export default function LoginPage() {
                     style={{ borderRadius: "3px" }}
                     {...register("password")}
                   />
+
                   {errors.password && (
-                    <p className="text-[11px] text-[#B94E27]">{errors.password.message}</p>
+                    <p className="text-[11px] text-[#B94E27]">
+                      {errors.password.message}
+                    </p>
                   )}
                 </div>
 
@@ -191,15 +236,23 @@ export default function LoginPage() {
                   className="w-full border border-[#B94E27] bg-[#D96B27] py-2 text-xs font-semibold uppercase tracking-wider text-white hover:bg-[#B94E27] disabled:opacity-50"
                   style={{ borderRadius: "3px" }}
                 >
-                  {loginMutation.isPending ? "Authenticating Session..." : "Authorize Portal Login"}
+                  {loginMutation.isPending
+                    ? "Authenticating Session..."
+                    : "Authorize Portal Login"}
                 </Button>
               </form>
 
               <div className="mt-4 border-t border-[#E8D8BD] pt-3 text-center text-[11px] text-[#6B5A4A]">
-                <p>Protected by Student Sphere Role-Gated Access Control</p>
+                <p>
+                  Protected by Student Sphere Role-Gated Access Control
+                </p>
+
                 <p className="mt-1">
                   Need credential recovery?{" "}
-                  <Link href="/contact" className="font-semibold text-[#D96B27] hover:underline">
+                  <Link
+                    href="/contact"
+                    className="font-semibold text-[#D96B27] hover:underline"
+                  >
                     Inquire at Registry Desk
                   </Link>
                 </p>
@@ -211,5 +264,23 @@ export default function LoginPage() {
 
       <PublicFooter />
     </div>
+  );
+}
+
+function LoginFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-[#FFF8E7] text-[#3B2921]">
+      <p className="text-sm text-[#6B5A4A]">
+        Loading institutional portal...
+      </p>
+    </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginFallback />}>
+      <LoginContent />
+    </Suspense>
   );
 }

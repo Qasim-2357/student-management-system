@@ -1,7 +1,7 @@
 from datetime import date
 from math import ceil
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Response, status as http_status
+from fastapi import APIRouter, Depends, HTTPException, Response, status as http_status
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -17,6 +17,7 @@ from app.services.assignments import (
     create_assignment,
     delete_assignment,
     get_assignment_or_404,
+    list_all_filtered_assignments,
     list_assignments,
     update_assignment,
 )
@@ -25,7 +26,11 @@ from app.services.student_authorization import authorize_assignment_access
 router = APIRouter(prefix="/assignments", tags=["Assignments"])
 
 
-@router.post("", response_model=AssignmentResponse, status_code=http_status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=AssignmentResponse,
+    status_code=http_status.HTTP_201_CREATED,
+)
 def create_assignment_endpoint(
     assignment_data: AssignmentCreate,
     db: Session = Depends(get_db),
@@ -36,31 +41,67 @@ def create_assignment_endpoint(
 
 @router.get("", response_model=AssignmentListResponse)
 def list_assignments_endpoint(
-    search: str | None = Query(default=None, min_length=1, max_length=100),
-    subject_id: int | None = Query(default=None, ge=1),
-    academic_class_id: int | None = Query(default=None, ge=1),
-    due_date: date | None = Query(default=None),
-    page: int = Query(default=1, ge=1),
-    page_size: int = Query(default=20, ge=1, le=100),
+    search: str | None = None,
+    subject_id: int | None = None,
+    academic_class_id: int | None = None,
+    due_date: date | None = None,
+    page: int = 1,
+    page_size: int = 20,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    assignments, total = list_assignments(
+    if current_user.role == "admin":
+        assignments, total = list_assignments(
+            db,
+            search=search,
+            subject_id=subject_id,
+            academic_class_id=academic_class_id,
+            due_date=due_date,
+            page=page,
+            page_size=page_size,
+        )
+
+        return AssignmentListResponse(
+            items=assignments,
+            total=total,
+            page=page,
+            page_size=page_size,
+            total_pages=ceil(total / page_size) if total else 0,
+        )
+
+    all_assignments = list_all_filtered_assignments(
         db,
         search=search,
         subject_id=subject_id,
         academic_class_id=academic_class_id,
         due_date=due_date,
-        page=page,
-        page_size=page_size,
     )
-    authorized_assignments = [
-        assignment
-        for assignment in assignments
-        if _can_access_assignment(db, assignment, current_user)
-    ]
+
+    authorized_assignments = []
+
+    for assignment in all_assignments:
+        try:
+            authorize_assignment_access(
+                db,
+                assignment,
+                current_user,
+            )
+        except HTTPException as exc:
+            if exc.status_code == http_status.HTTP_403_FORBIDDEN:
+                continue
+            raise
+
+        authorized_assignments.append(assignment)
+
+    total = len(authorized_assignments)
+
+    start = (page - 1) * page_size
+    end = start + page_size
+
+    paginated_assignments = authorized_assignments[start:end]
+
     return AssignmentListResponse(
-        items=authorized_assignments,
+        items=paginated_assignments,
         total=total,
         page=page,
         page_size=page_size,
@@ -75,16 +116,14 @@ def get_assignment_endpoint(
     current_user: User = Depends(get_current_user),
 ):
     assignment = get_assignment_or_404(db, assignment_id)
-    authorize_assignment_access(db, assignment, current_user)
+
+    authorize_assignment_access(
+        db,
+        assignment,
+        current_user,
+    )
+
     return assignment
-
-
-def _can_access_assignment(db: Session, assignment, current_user: User) -> bool:
-    try:
-        authorize_assignment_access(db, assignment, current_user)
-    except HTTPException:
-        return False
-    return True
 
 
 @router.patch("/{assignment_id}", response_model=AssignmentResponse)
@@ -94,14 +133,28 @@ def update_assignment_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_admin),
 ):
-    return update_assignment(db, get_assignment_or_404(db, assignment_id), assignment_data)
+    assignment = get_assignment_or_404(db, assignment_id)
+
+    return update_assignment(
+        db,
+        assignment,
+        assignment_data,
+    )
 
 
-@router.delete("/{assignment_id}", status_code=http_status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{assignment_id}",
+    status_code=http_status.HTTP_204_NO_CONTENT,
+)
 def delete_assignment_endpoint(
     assignment_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_admin),
 ) -> Response:
-    delete_assignment(db, get_assignment_or_404(db, assignment_id))
-    return Response(status_code=http_status.HTTP_204_NO_CONTENT)
+    assignment = get_assignment_or_404(db, assignment_id)
+
+    delete_assignment(db, assignment)
+
+    return Response(
+        status_code=http_status.HTTP_204_NO_CONTENT,
+    )

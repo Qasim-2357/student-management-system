@@ -24,6 +24,7 @@ class StudentCreate(BaseModel):
     semester: int = Field(ge=1)
     user_id: int | None = Field(default=None, ge=1)
     academic_class_id: int | None = Field(default=None, ge=1)
+    password: str | None = Field(default=None, min_length=8, max_length=128)
 
     @field_validator("name", "roll_number", "course", "phone", mode="before")
     @classmethod

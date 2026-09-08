@@ -7,31 +7,62 @@ from app.models.models import Assignment, AssignmentSubmission, Student
 from app.schemas.submission import SubmissionCreate, SubmissionStatus, SubmissionUpdate
 
 
-def get_submission_or_404(db: Session, submission_id: int) -> AssignmentSubmission:
+def get_submission_or_404(
+    db: Session,
+    submission_id: int,
+) -> AssignmentSubmission:
     submission = db.get(AssignmentSubmission, submission_id)
+
     if submission is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Submission with id {submission_id} was not found",
         )
+
     return submission
 
 
-def _ensure_assignment_exists(db: Session, assignment_id: int) -> Assignment:
+def _ensure_assignment_exists(
+    db: Session,
+    assignment_id: int,
+) -> Assignment:
     assignment = db.get(Assignment, assignment_id)
+
     if assignment is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Assignment with id {assignment_id} was not found",
         )
+
     return assignment
 
 
-def _ensure_student_exists(db: Session, student_id: int) -> None:
-    if db.get(Student, student_id) is None:
+def _ensure_student_exists(
+    db: Session,
+    student_id: int,
+) -> Student:
+    student = db.get(Student, student_id)
+
+    if student is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Student with id {student_id} was not found",
+        )
+
+    return student
+
+
+def _ensure_student_belongs_to_assignment_class(
+    student: Student,
+    assignment: Assignment,
+) -> None:
+    if (
+        assignment.academic_class_id is not None
+        and student.academic_class_id != assignment.academic_class_id
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+            detail="The student does not belong to the assignment's academic class",
         )
 
 
@@ -41,8 +72,10 @@ def _calculate_submission_status(
 ) -> str:
     if submitted_at is None:
         return "pending"
+
     if submitted_at.date() <= due_date:
         return "submitted"
+
     return "late"
 
 
@@ -56,8 +89,12 @@ def _ensure_unique_submission(
         AssignmentSubmission.assignment_id == assignment_id,
         AssignmentSubmission.student_id == student_id,
     )
+
     if submission_id is not None:
-        statement = statement.where(AssignmentSubmission.id != submission_id)
+        statement = statement.where(
+            AssignmentSubmission.id != submission_id
+        )
+
     if db.scalar(statement) is not None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -71,8 +108,22 @@ def create_submission(
     submission_data: SubmissionCreate,
 ) -> AssignmentSubmission:
     assignment = _ensure_assignment_exists(db, assignment_id)
-    _ensure_student_exists(db, submission_data.student_id)
-    _ensure_unique_submission(db, assignment_id, submission_data.student_id)
+
+    student = _ensure_student_exists(
+        db,
+        submission_data.student_id,
+    )
+
+    _ensure_student_belongs_to_assignment_class(
+        student,
+        assignment,
+    )
+
+    _ensure_unique_submission(
+        db,
+        assignment_id,
+        submission_data.student_id,
+    )
 
     submission = AssignmentSubmission(
         assignment_id=assignment_id,
@@ -83,9 +134,11 @@ def create_submission(
             assignment.due_date,
         ),
     )
+
     db.add(submission)
     _commit_or_raise_conflict(db)
     db.refresh(submission)
+
     return submission
 
 
@@ -97,7 +150,16 @@ def update_submission(
     changes = submission_data.model_dump(exclude_unset=True)
 
     if "student_id" in changes:
-        _ensure_student_exists(db, changes["student_id"])
+        student = _ensure_student_exists(
+            db,
+            changes["student_id"],
+        )
+
+        _ensure_student_belongs_to_assignment_class(
+            student,
+            submission.assignment,
+        )
+
         _ensure_unique_submission(
             db,
             submission.assignment_id,
@@ -115,11 +177,16 @@ def update_submission(
 
     _commit_or_raise_conflict(db)
     db.refresh(submission)
+
     return submission
 
 
-def delete_submission(db: Session, submission: AssignmentSubmission) -> None:
+def delete_submission(
+    db: Session,
+    submission: AssignmentSubmission,
+) -> None:
     db.delete(submission)
+
     try:
         db.commit()
     except IntegrityError:
@@ -142,22 +209,45 @@ def list_submissions(
 ) -> tuple[list[AssignmentSubmission], int]:
     _ensure_assignment_exists(db, assignment_id)
 
-    filters = [AssignmentSubmission.assignment_id == assignment_id]
-    if student_ids is not None:
-        filters.append(AssignmentSubmission.student_id.in_(student_ids))
-    if student_id is not None:
-        filters.append(AssignmentSubmission.student_id == student_id)
-    if status is not None:
-        filters.append(AssignmentSubmission.status == status)
+    filters = [
+        AssignmentSubmission.assignment_id == assignment_id
+    ]
 
-    total = db.scalar(select(func.count()).select_from(AssignmentSubmission).where(*filters)) or 0
+    if student_ids is not None:
+        filters.append(
+            AssignmentSubmission.student_id.in_(student_ids)
+        )
+
+    if student_id is not None:
+        filters.append(
+            AssignmentSubmission.student_id == student_id
+        )
+
+    if status is not None:
+        filters.append(
+            AssignmentSubmission.status == status
+        )
+
+    total = (
+        db.scalar(
+            select(func.count())
+            .select_from(AssignmentSubmission)
+            .where(*filters)
+        )
+        or 0
+    )
+
     submissions = db.scalars(
         select(AssignmentSubmission)
         .where(*filters)
-        .order_by(AssignmentSubmission.student_id.asc(), AssignmentSubmission.id.asc())
+        .order_by(
+            AssignmentSubmission.student_id.asc(),
+            AssignmentSubmission.id.asc(),
+        )
         .offset((page - 1) * page_size)
         .limit(page_size)
     ).all()
+
     return submissions, total
 
 

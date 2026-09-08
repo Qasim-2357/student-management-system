@@ -88,6 +88,30 @@ class TeacherApiTests(unittest.TestCase):
         self.assertEqual(response.json()["user_id"], self.teacher_user.id)
         self.assertEqual(response.json()["email"], "ada.teacher@example.com")
 
+    def test_create_teacher_with_password_allows_identifier_login(self):
+        self._login(self.admin.email)
+        payload = self._teacher_payload(
+            email="new.teacher@studentsphere.edu",
+            password="TeacherPass@123",
+        )
+        del payload["user_id"]
+
+        response = self.client.post("/teachers", json=payload)
+
+        self.assertEqual(response.status_code, 201, response.text)
+        body = response.json()
+        self.assertIsNotNone(body["user_id"])
+        self.assertEqual(body["teacher_code"], f"TCH-{body['id']:04d}")
+
+        self.client.post("/auth/logout")
+        login_response = self.client.post(
+            "/auth/login",
+            json={"identifier": body["teacher_code"], "password": "TeacherPass@123"},
+        )
+        self.assertEqual(login_response.status_code, 200, login_response.text)
+        self.assertEqual(login_response.json()["user"]["id"], body["user_id"])
+        self.assertEqual(login_response.json()["user"]["role"], "teacher")
+
     def test_create_requires_user_id(self):
         self._login(self.admin.email)
         payload = self._teacher_payload()
