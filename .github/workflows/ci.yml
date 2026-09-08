@@ -1,7 +1,6 @@
-```yaml
 name: CI
 
-on:
+'on':
   push:
     branches:
       - main
@@ -112,4 +111,3 @@ jobs:
 
       - name: Build frontend image
         run: docker build --build-arg BACKEND_API_URL=http://backend:8000 -t student-management-frontend ./frontend
-```
