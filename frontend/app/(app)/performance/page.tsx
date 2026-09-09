@@ -1,10 +1,11 @@
 "use client"
 
-import React, { useMemo, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { useAuth } from "@/lib/hooks/use-auth"
 import { useStudents } from "@/lib/hooks/use-students"
-import { useStudentPerformance } from "@/lib/hooks/use-performance"
+import { useStudentPerformance, useAnalyzeStudentPerformance } from "@/lib/hooks/use-performance"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Select } from "@/components/ui/select"
 import { LoadingState } from "@/components/states/LoadingState"
 import { ErrorState } from "@/components/states/ErrorState"
@@ -26,6 +27,15 @@ export default function PerformanceDashboardPage() {
   }, [isStudent, selectedStudentId, studentList])
   const performance = useStudentPerformance(activeStudentId)
   const charts = useStudentCharts(activeStudentId)
+  const analysis = useAnalyzeStudentPerformance()
+
+  // A stale analysis for a previously-selected student should never be
+  // shown against a different student's data - clear it whenever the
+  // active student changes. This never triggers a fetch by itself.
+  useEffect(() => {
+    analysis.reset()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeStudentId])
 
   if (authLoading || studentsLoading) {
     return <LoadingState />
@@ -196,6 +206,109 @@ export default function PerformanceDashboardPage() {
               <CardContent>{charts.attendance.data ? <p className="text-sm">{charts.attendance.data.present} present / {charts.attendance.data.total} total ({charts.attendance.data.percentage}%)</p> : <p className="text-sm text-[#A89F91]">No attendance chart data.</p>}</CardContent>
             </Card>
           </div>
+
+          <Card className="border-[#E8DCC4] bg-[#FFFDF9]">
+            <CardHeader className="space-y-1">
+              <CardTitle className="text-base font-semibold text-[#422006]">
+                AI Performance Analysis
+              </CardTitle>
+              <p className="text-sm text-[#78350F]">
+                An AI-generated interpretation of this student&apos;s existing academic
+                performance above. The AI does not calculate any marks, grades, or
+                attendance figures itself - it only summarizes the numbers already shown
+                on this page.
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {analysis.status === "idle" ? (
+                <Button
+                  onClick={() => activeStudentId && analysis.mutate(activeStudentId)}
+                  disabled={!activeStudentId}
+                >
+                  Analyze Performance
+                </Button>
+              ) : analysis.status === "pending" ? (
+                <div className="space-y-3">
+                  <Button disabled>Analyzing…</Button>
+                  <LoadingState label="Generating AI performance analysis" rows={4} />
+                </div>
+              ) : analysis.status === "error" ? (
+                <ErrorState
+                  title={analysis.error?.status === 503 ? "AI analysis unavailable" : "Analysis failed"}
+                  message={
+                    analysis.error?.status === 503
+                      ? "AI analysis is currently unavailable. Please try again later."
+                      : analysis.error?.message || "Something went wrong while analyzing performance."
+                  }
+                  onRetry={() => activeStudentId && analysis.mutate(activeStudentId)}
+                />
+              ) : (
+                <div className="space-y-5">
+                  <div>
+                    <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-[#A89F91]">
+                      Summary
+                    </h3>
+                    <p className="text-sm text-[#422006]">{analysis.data.summary}</p>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div>
+                      <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-[#A89F91]">
+                        Strengths
+                      </h3>
+                      {analysis.data.strengths.length ? (
+                        <ul className="list-disc space-y-1 pl-4 text-sm text-[#422006]">
+                          {analysis.data.strengths.map((item, index) => (
+                            <li key={index}>{item}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-sm text-[#A89F91]">None identified.</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-[#A89F91]">
+                        Areas for Improvement
+                      </h3>
+                      {analysis.data.areas_for_improvement.length ? (
+                        <ul className="list-disc space-y-1 pl-4 text-sm text-[#422006]">
+                          {analysis.data.areas_for_improvement.map((item, index) => (
+                            <li key={index}>{item}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-sm text-[#A89F91]">None identified.</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="mb-1.5 text-xs font-semibold uppercase tracking-wider text-[#A89F91]">
+                      Recommendations
+                    </h3>
+                    {analysis.data.recommendations.length ? (
+                      <ul className="list-disc space-y-1 pl-4 text-sm text-[#422006]">
+                        {analysis.data.recommendations.map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-[#A89F91]">No recommendations provided.</p>
+                    )}
+                  </div>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => activeStudentId && analysis.mutate(activeStudentId)}
+                  >
+                    Re-analyze
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </>
       )}
     </div>

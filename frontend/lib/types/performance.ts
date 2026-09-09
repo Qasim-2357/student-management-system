@@ -16,3 +16,16 @@ export interface PerformanceResponse {
   total_subjects: number
   results: PerformanceResultItem[]
 }
+
+/**
+ * AI-generated interpretation of a student's already-calculated
+ * performance data. Mirrors backend `AIPerformanceAnalysisResponse`
+ * (app/schemas/ai_analysis.py) - the AI only interprets figures the
+ * backend already computed, it never derives them itself.
+ */
+export interface AIPerformanceAnalysis {
+  summary: string
+  strengths: string[]
+  areas_for_improvement: string[]
+  recommendations: string[]
+}
