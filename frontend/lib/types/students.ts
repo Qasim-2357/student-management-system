@@ -31,6 +31,7 @@ export interface StudentCreate {
   semester: number;
   user_id?: number | null;
   academic_class_id?: number | null;
+  password?: string;
 }
 
 export type StudentUpdate = Partial<StudentCreate>;

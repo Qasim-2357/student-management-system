@@ -16,6 +16,7 @@ const studentSchema = z.object({
   course: z.string().min(1, "Course is required").max(100),
   semester: z.number().int().positive("Semester must be positive"),
   academic_class_id: z.string().optional(),
+  password: z.string().max(128).optional(),
 });
 
 type StudentFormValues = z.infer<typeof studentSchema>;
@@ -53,9 +54,12 @@ export function StudentForm({ initialData, onSubmit, busy = false, submitLabel =
       ? studentObj.name.split(" ").slice(1).join(" ")
       : "";
 
+  const isEditMode = Boolean(initialData);
+
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm<StudentFormValues>({
     resolver: zodResolver(studentSchema),
@@ -68,12 +72,27 @@ export function StudentForm({ initialData, onSubmit, busy = false, submitLabel =
       course: initialData?.course ?? "",
       semester: initialData?.semester ?? 1,
       academic_class_id: initialData?.academic_class_id ? String(initialData.academic_class_id) : "",
+      password: "",
     },
   });
 
   const onFormSubmit = async (values: StudentFormValues) => {
+    // Password is only relevant when creating a new student login account;
+    // edit mode never requires or sends a password, preserving the
+    // existing update flow untouched.
+    if (!isEditMode) {
+      if (!values.password) {
+        setError("password", { message: "Password is required to create a student login" });
+        return;
+      }
+      if (values.password.length < 8) {
+        setError("password", { message: "Password must be at least 8 characters" });
+        return;
+      }
+    }
+
     const fullName = `${values.first_name.trim()} ${values.last_name.trim()}`.trim();
-    
+
     // Construct payload compatible with StudentCreate ({ name, roll_number, email, ... })
     const payload: StudentCreate = {
       name: fullName,
@@ -83,6 +102,7 @@ export function StudentForm({ initialData, onSubmit, busy = false, submitLabel =
       course: values.course,
       semester: values.semester,
       academic_class_id: values.academic_class_id ? Number(values.academic_class_id) : undefined,
+      ...(!isEditMode && values.password ? { password: values.password } : {}),
     };
 
     await onSubmit(payload);
@@ -96,6 +116,18 @@ export function StudentForm({ initialData, onSubmit, busy = false, submitLabel =
         </h2>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {/* Student ID */}
+          <div className="space-y-1">
+            <label className="text-xs font-semibold text-[#3B2921]">Student ID</label>
+            <input
+              type="text"
+              value={initialData?.student_code ?? "Generated after creation"}
+              readOnly
+              className="w-full border border-[#E8D8BD] bg-[#F3EAD3] px-3 py-2 text-xs font-mono text-[#6B5A4A] focus:outline-none"
+              style={{ borderRadius: "3px" }}
+            />
+          </div>
+
           {/* First Name */}
           <div className="space-y-1">
             <label className="text-xs font-semibold text-[#3B2921]">First Name *</label>
@@ -198,6 +230,21 @@ export function StudentForm({ initialData, onSubmit, busy = false, submitLabel =
               ))}
             </select>
           </div>
+
+          {/* Password (create mode only) */}
+          {!isEditMode ? (
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-[#3B2921]">Login Password *</label>
+              <input
+                type="password"
+                {...register("password")}
+                autoComplete="new-password"
+                className="w-full border border-[#E8D8BD] bg-[#FFF8E7] px-3 py-2 text-xs text-[#3B2921] focus:border-[#D96B27] focus:outline-none"
+                style={{ borderRadius: "3px" }}
+              />
+              {errors.password && <p className="text-[11px] text-[#B94E27]">{errors.password.message}</p>}
+            </div>
+          ) : null}
 
         </div>
       </div>

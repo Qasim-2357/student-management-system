@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator
+from pydantic import BaseModel, ConfigDict, EmailStr, Field, field_validator, model_validator
 
 from app.schemas.academic_class import ClassResponse
 
@@ -25,6 +25,12 @@ class StudentCreate(BaseModel):
     user_id: int | None = Field(default=None, ge=1)
     academic_class_id: int | None = Field(default=None, ge=1)
     password: str | None = Field(default=None, min_length=8, max_length=128)
+
+    @model_validator(mode="after")
+    def require_password_for_new_account(self):
+        if self.user_id is None and not self.password:
+            raise ValueError("password is required when creating a student login account")
+        return self
 
     @field_validator("name", "roll_number", "course", "phone", mode="before")
     @classmethod

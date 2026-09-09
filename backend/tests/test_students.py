@@ -73,6 +73,7 @@ class StudentApiTests(unittest.TestCase):
             "date_of_birth": "2000-12-10",
             "course": "Computer Science",
             "semester": 3,
+            "password": "StudentPass@123",
         }
         payload.update(overrides)
         return payload
@@ -124,14 +125,61 @@ class StudentApiTests(unittest.TestCase):
         self.assertEqual(login_response.json()["user"]["id"], body["user_id"])
         self.assertEqual(login_response.json()["user"]["role"], "student")
 
-    def test_create_student_without_password_has_no_linked_account(self):
-        # Existing behaviour: a student profile can still be created with
-        # no login account at all when neither user_id nor password is
-        # supplied.
-        response = self._create_student_as_admin()
+    def test_create_requires_user_id_or_password(self):
+        # Mirrors teacher creation: a student profile always needs a login
+        # account, either linked via an existing user_id or created inline
+        # with an admin-supplied password.
+        self._login(self.admin.email)
+        payload = self._student_payload()
+        del payload["password"]
+
+        response = self.client.post("/students", json=payload)
+
+        self.assertEqual(response.status_code, 422, response.text)
+
+    def test_create_student_creates_linked_user_with_student_role(self):
+        response = self._create_student_as_admin(
+            email="linked.student@studentsphere.edu",
+            password="StudentPass@123",
+        )
 
         self.assertEqual(response.status_code, 201, response.text)
-        self.assertIsNone(response.json()["user_id"])
+        body = response.json()
+        self.assertIsNotNone(body["user_id"])
+
+        linked_user = self.db.get(User, body["user_id"])
+        self.assertIsNotNone(linked_user)
+        self.assertEqual(linked_user.role, "student")
+
+    def test_student_password_is_hashed_and_not_stored_in_plaintext(self):
+        response = self._create_student_as_admin(
+            email="hashed.student@studentsphere.edu",
+            password="StudentPass@123",
+        )
+
+        self.assertEqual(response.status_code, 201, response.text)
+        body = response.json()
+        self.assertNotIn("password", body)
+
+        linked_user = self.db.get(User, body["user_id"])
+        self.assertNotEqual(linked_user.password_hash, "StudentPass@123")
+        self.assertTrue(linked_user.password_hash.startswith("$2b$"))
+
+    def test_student_wrong_password_fails_login(self):
+        response = self._create_student_as_admin(
+            email="wrongpass.student@studentsphere.edu",
+            password="StudentPass@123",
+        )
+        self.assertEqual(response.status_code, 201, response.text)
+        body = response.json()
+
+        self.client.post("/auth/logout")
+        login_response = self.client.post(
+            "/auth/login",
+            json={"identifier": body["student_code"], "password": "WrongPassword@123"},
+        )
+
+        self.assertEqual(login_response.status_code, 401, login_response.text)
 
     def test_admin_user_cannot_be_linked_to_student(self):
         response = self._create_student_as_admin(user_id=self.admin.id)
@@ -232,7 +280,12 @@ class StudentApiTests(unittest.TestCase):
         self.assertEqual(response.status_code, 409, response.text)
 
     def test_invalid_class(self):
-        response = self._create_student_as_admin(academic_class_id=9999)
+        student_user = self._create_user("student@example.com", "student")
+
+        response = self._create_student_as_admin(
+            user_id=student_user.id,
+            academic_class_id=9999,
+        )
 
         self.assertEqual(response.status_code, 404, response.text)
 

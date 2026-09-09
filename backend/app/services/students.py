@@ -200,12 +200,11 @@ def create_student(db: Session, student_data: StudentCreate) -> Student:
     payload = student_data.model_dump(exclude={"password"})
     user_id = payload["user_id"]
 
-    # Opt-in inline account creation: if no existing user is being linked
-    # and a password was supplied, create the login account here so the
-    # student can authenticate with their institutional identifier
-    # (STU-XXXX) once the profile exists. Omitting the password preserves
-    # the existing behaviour of creating a student profile with no linked
-    # login account.
+    # Inline account creation: when no existing user is being linked, the
+    # schema guarantees a password was supplied (mirrors teacher creation),
+    # so a login account is created here and the student can authenticate
+    # with their institutional identifier (STU-XXXX) once the profile
+    # exists.
     if user_id is None and student_data.password:
         existing_user = db.scalar(select(User).where(User.email == student_data.email))
         if existing_user is not None:

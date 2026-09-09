@@ -5,30 +5,34 @@ import { QueryProvider } from "@/components/providers/QueryProvider";
 import "./globals.css";
 
 const geistSans = Geist({
-variable: "--font-geist-sans",
-subsets: ["latin"],
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-variable: "--font-geist-mono",
-subsets: ["latin"],
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-title: "Student Sphere | Academic Management Platform",
-description:
-"Student Sphere helps institutions manage students, faculty, academics, attendance, results, and announcements in one professional platform.",
+  title: "Student Sphere | Academic Management Platform",
+  description:
+    "Student Sphere helps institutions manage students, faculty, academics, attendance, results, and announcements in one professional platform.",
 };
 
 export default function RootLayout({
-children,
+  children,
 }: {
-children: ReactNode;
+  children: ReactNode;
 }) {
-return (
-<html
-lang="en"
-className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-> <body className="min-h-full flex flex-col"> <QueryProvider>{children}</QueryProvider> </body> </html>
-);
+  return (
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">
+        <QueryProvider>{children}</QueryProvider>
+      </body>
+    </html>
+  );
 }

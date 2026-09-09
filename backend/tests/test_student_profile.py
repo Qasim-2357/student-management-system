@@ -74,6 +74,7 @@ class StudentProfileApiTests(unittest.TestCase):
             "date_of_birth": "2000-12-10",
             "course": "Computer Science",
             "semester": 3,
+            "password": "StudentPass@123",
         }
         payload.update(overrides)
         return payload
